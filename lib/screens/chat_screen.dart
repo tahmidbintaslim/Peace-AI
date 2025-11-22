@@ -3,6 +3,8 @@ import '../models/message.dart';
 import '../services/ai_response_service.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input.dart';
+import 'settings_screen.dart';
+import 'bookmarks_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -96,6 +98,47 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
+  Widget _buildQuickActions() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Quick Topics',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildQuickActionChip('Prayer', Icons.mosque),
+              _buildQuickActionChip('Mercy', Icons.favorite_border),
+              _buildQuickActionChip('Knowledge', Icons.school),
+              _buildQuickActionChip('Patience', Icons.hourglass_empty),
+              _buildQuickActionChip('Charity', Icons.volunteer_activism),
+              _buildQuickActionChip('Family', Icons.family_restroom),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionChip(String label, IconData icon) {
+    return ActionChip(
+      avatar: Icon(icon, size: 18),
+      label: Text(label),
+      onPressed: () => _handleSendMessage(label),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +152,29 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         elevation: 2,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.bookmark_border),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BookmarksScreen(),
+                ),
+              );
+            },
+            tooltip: 'Bookmarks',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () {
@@ -164,6 +230,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
           ),
+          if (!_isLoading && _messages.length <= 1)
+            _buildQuickActions(),
           if (_isLoading)
             Padding(
               padding: const EdgeInsets.all(8.0),
