@@ -8,13 +8,18 @@ Peace AI is an Islamic knowledge assistant designed to help users learn about Is
 
 ## Features
 
-- 🌙 **Islamic Knowledge Base**: Access to Quranic verses and authentic Hadiths
+- 🌙 **Expanded Islamic Knowledge Base**: 50+ Quranic verses from 25+ Surahs and 20+ authentic Hadiths
 - 💬 **Interactive Chat Interface**: User-friendly chat interface for asking questions
 - 📱 **Cross-Platform**: Built with Flutter for iOS, Android, Web, and Desktop support
 - 🎨 **Modern UI**: Material Design 3 with light and dark theme support
-- 🔍 **Smart Search**: Intelligent search through Quran and Hadith collections
+- 🔍 **Smart Search**: Intelligent search through expanded Quran and Hadith collections
 - 📖 **Source References**: Every response includes references to Quran and Hadith sources
 - 🌐 **Multilingual Support**: Arabic text with English translations
+- ⚡ **Quick Actions**: Instant access to common topics like Prayer, Mercy, Knowledge, and more
+- 🔖 **Bookmarks**: Save your favorite responses for later reference
+- 📤 **Share**: Easily copy and share responses with proper attribution
+- ⚙️ **Settings**: Customize app preferences and view content statistics
+- 📊 **Statistics**: View comprehensive database information and collections
 
 ## Technology Stack
 
@@ -111,6 +116,12 @@ flutter build windows --release  # or macos, linux
 - "What does Islam say about mercy?"
 - "Teach me about prayer"
 - "What is the meaning of Al-Fatihah?"
+- "Tell me about patience"
+- "What does Islam say about knowledge?"
+- "Teach me about charity"
+- "Tell me about good character"
+
+Or use the **Quick Actions** buttons to instantly explore popular topics!
 
 ## Future Enhancements
 
