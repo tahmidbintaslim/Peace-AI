@@ -60,6 +60,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Expanded Quran database (50+ verses from 25+ Surahs)
+- Expanded Hadith collection (20+ authentic Hadiths from major collections)
+- Quick action buttons for common queries (Prayer, Mercy, Knowledge, Patience, Charity, Family)
+- Bookmarks feature to save favorite responses
+- Share functionality to copy and share responses
+- Settings screen with theme preferences and app information
+- Statistics screen showing content overview and collections
+- Enhanced AI response system with 10+ query categories
+- Additional Islamic Knowledge Service methods (getVerse, getVersesBySurah, getSurahNames, etc.)
+
+### Improved
+- AI response generation with better context awareness
+- Search capabilities across expanded database
+- UI/UX with action buttons and better navigation
+- Message bubbles with bookmark and share options
+- Welcome message with comprehensive topic list
+
 ### Planned Features
 - [ ] Expand Quran database (all 114 surahs)
 - [ ] Comprehensive Hadith collections (Sahih Bukhari, Sahih Muslim, etc.)
