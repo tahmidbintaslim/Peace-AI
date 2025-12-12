@@ -13,22 +13,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        elevation: 2,
-      ),
+      appBar: AppBar(title: const Text('Settings'), elevation: 2),
       body: ListView(
         children: [
           const SizedBox(height: 16),
           _buildSectionHeader('Appearance'),
           _buildThemeTile(),
           const Divider(),
-          
+
           _buildSectionHeader('About'),
           _buildAboutTile(),
           _buildVersionTile(),
           const Divider(),
-          
+
           _buildSectionHeader('Content'),
           _buildStatisticsTile(),
         ],
@@ -56,8 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _themeMode == ThemeMode.dark
             ? Icons.dark_mode
             : _themeMode == ThemeMode.light
-                ? Icons.light_mode
-                : Icons.brightness_auto,
+            ? Icons.light_mode
+            : Icons.brightness_auto,
       ),
       title: const Text('Theme'),
       subtitle: Text(_getThemeModeText()),
@@ -130,9 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const StatisticsScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const StatisticsScreen()),
         );
       },
     );
@@ -215,10 +210,7 @@ class StatisticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Content Statistics'),
-        elevation: 2,
-      ),
+      appBar: AppBar(title: const Text('Content Statistics'), elevation: 2),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -253,9 +245,9 @@ class StatisticsScreen extends StatelessWidget {
             const SizedBox(height: 32),
             Text(
               'Collections Included:',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             _buildCollectionChip(context, 'Sahih Bukhari'),
@@ -285,10 +277,7 @@ class StatisticsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: color.withOpacity(0.3), width: 2),
       ),
       child: Row(
         children: [
@@ -305,27 +294,23 @@ class StatisticsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text(title, style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
                 Text(
                   value,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurfaceVariant
-                            .withOpacity(0.7),
-                      ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurfaceVariant.withOpacity(0.7),
+                  ),
                 ),
               ],
             ),

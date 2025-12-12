@@ -4,7 +4,10 @@ import '../models/message.dart';
 
 class ShareService {
   /// Share a message text
-  static Future<void> shareMessage(BuildContext context, Message message) async {
+  static Future<void> shareMessage(
+    BuildContext context,
+    Message message,
+  ) async {
     final text = _formatMessageForSharing(message);
     await _copyToClipboard(context, text);
   }
@@ -12,10 +15,10 @@ class ShareService {
   /// Format message for sharing
   static String _formatMessageForSharing(Message message) {
     final buffer = StringBuffer();
-    
+
     // Add message text
     buffer.writeln(message.text);
-    
+
     // Add references if available
     if (message.references != null && message.references!.isNotEmpty) {
       buffer.writeln();
@@ -24,20 +27,23 @@ class ShareService {
         buffer.writeln('- $ref');
       }
     }
-    
+
     // Add attribution
     buffer.writeln();
     buffer.writeln('---');
     buffer.writeln('Shared from Peace AI');
     buffer.writeln('Islamic Knowledge Assistant');
-    
+
     return buffer.toString();
   }
 
   /// Copy text to clipboard
-  static Future<void> _copyToClipboard(BuildContext context, String text) async {
+  static Future<void> _copyToClipboard(
+    BuildContext context,
+    String text,
+  ) async {
     await Clipboard.setData(ClipboardData(text: text));
-    
+
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

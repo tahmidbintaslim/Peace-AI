@@ -61,7 +61,9 @@ class _MessageBubbleState extends State<MessageBubble> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isUser) ...[
@@ -78,10 +80,15 @@ class _MessageBubbleState extends State<MessageBubble> {
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isUser
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: isUser
                         ? colorScheme.primary
@@ -98,123 +105,135 @@ class _MessageBubbleState extends State<MessageBubble> {
                     children: [
                       Text(
                         widget.message.text,
-                    style: TextStyle(
-                      color: isUser
-                          ? colorScheme.onPrimary
-                          : colorScheme.onSurfaceVariant,
-                      fontSize: 15,
-                      height: 1.4,
-                    ),
+                        style: TextStyle(
+                          color: isUser
+                              ? colorScheme.onPrimary
+                              : colorScheme.onSurfaceVariant,
+                          fontSize: 15,
+                          height: 1.4,
+                        ),
+                      ),
+                      if (widget.message.references != null &&
+                          widget.message.references!.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children: widget.message.references!.map((ref) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isUser
+                                    ? colorScheme.onPrimary.withOpacity(0.2)
+                                    : colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                ref,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: isUser
+                                      ? colorScheme.onPrimary
+                                      : colorScheme.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatTime(widget.message.timestamp),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isUser
+                              ? colorScheme.onPrimary.withOpacity(0.7)
+                              : colorScheme.onSurfaceVariant.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
                   ),
-                  if (widget.message.references != null && widget.message.references!.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: widget.message.references!.map((ref) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isUser
-                                ? colorScheme.onPrimary.withOpacity(0.2)
-                                : colorScheme.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            ref,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isUser
-                                  ? colorScheme.onPrimary
-                                  : colorScheme.primary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
+                ),
+                // Add share button for AI messages only
+                if (!isUser) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    _formatTime(widget.message.timestamp),
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: isUser
-                          ? colorScheme.onPrimary.withOpacity(0.7)
-                          : colorScheme.onSurfaceVariant.withOpacity(0.7),
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: _toggleBookmark,
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 2,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _isBookmarked
+                                    ? Icons.bookmark
+                                    : Icons.bookmark_border,
+                                size: 14,
+                                color: colorScheme.primary.withOpacity(0.7),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                _isBookmarked ? 'Saved' : 'Save',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: colorScheme.primary.withOpacity(0.7),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      InkWell(
+                        onTap: () => ShareService.showShareDialog(
+                          context,
+                          widget.message,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 2,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.share,
+                                size: 14,
+                                color: colorScheme.primary.withOpacity(0.7),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Share',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: colorScheme.primary.withOpacity(0.7),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
+              ],
             ),
-            // Add share button for AI messages only
-            if (!isUser) ...[
-              const SizedBox(height: 4),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    onTap: _toggleBookmark,
-                    borderRadius: BorderRadius.circular(4),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                            size: 14,
-                            color: colorScheme.primary.withOpacity(0.7),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            _isBookmarked ? 'Saved' : 'Save',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: colorScheme.primary.withOpacity(0.7),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  InkWell(
-                    onTap: () => ShareService.showShareDialog(context, widget.message),
-                    borderRadius: BorderRadius.circular(4),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.share,
-                            size: 14,
-                            color: colorScheme.primary.withOpacity(0.7),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Share',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: colorScheme.primary.withOpacity(0.7),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
+          ),
           if (isUser) ...[
             const SizedBox(width: 8),
             CircleAvatar(

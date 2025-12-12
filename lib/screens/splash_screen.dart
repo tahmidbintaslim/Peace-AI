@@ -8,7 +8,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
@@ -64,7 +65,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 'Islamic Knowledge Assistant',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onPrimary.withOpacity(0.8),
                 ),
               ),
               const SizedBox(height: 48),

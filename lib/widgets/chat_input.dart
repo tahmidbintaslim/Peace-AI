@@ -98,7 +98,9 @@ class _ChatInputState extends State<ChatInput> {
                       Icons.send,
                       color: _hasText && widget.enabled
                           ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                          : Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant.withOpacity(0.5),
                     ),
                   ),
                 ),
