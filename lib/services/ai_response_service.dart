@@ -1,5 +1,4 @@
 import '../models/message.dart';
-import '../models/islamic_content.dart';
 import 'islamic_knowledge_service.dart';
 
 class AIResponseService {
