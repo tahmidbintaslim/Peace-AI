@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.peaceai.peace_ai"
-    compileSdk flutter.compileSdkVersion
+    // shared_preferences_android needs 34; Flutter 3.16 defaults to 33.
+    compileSdk 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {

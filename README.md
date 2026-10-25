@@ -1,169 +1,108 @@
 # Peace AI
 
-An open-source AI application with Al Quran and Hadith knowledge, built with Flutter.
+A Flutter chat app that answers questions about Islam with Quran verses and
+hadiths from a small dataset built into the app.
 
-## Overview
+## What it is
 
-Peace AI is an Islamic knowledge assistant designed to help users learn about Islam through the Quran and Hadith. The application provides intelligent responses to user queries by referencing authentic Islamic sources.
+You type a question (or tap a topic chip), and the app replies with a short
+fixed explanation plus at most one Quran verse (Arabic text and English
+translation) and at most one hadith (English translation only), each with its
+reference. Some replies, such as the greeting or the no-match message, have
+no verse or hadith.
+
+Despite the name, there is no AI model and no network call. Replies come from
+keyword rules in `lib/services/ai_response_service.dart`: the lowercased query
+is checked for substrings tied to topics such as prayer, mercy, patience or
+charity. The checks are plain substring matches, so "hi" inside "this" or
+"which" triggers the greeting. A query that contains "what", "how", "help",
+"guidance" or "advice" and no earlier topic word gets a fixed help message and
+a verse picked by the clock. Anything else is searched as one whole phrase in
+the verse translations and surah names, then in the hadith translations and
+narrator names, so a multi-word question rarely matches.
+
+The dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
+
+- 46 Quran verses from 29 surahs
+- 20 hadiths (Sahih Bukhari, Sahih Muslim, Sunan At-Tirmidhi, Sunan Ibn Majah)
+
+The texts and translations have not been reviewed by a scholar. Check them
+against a trusted source before relying on them.
 
 ## Features
 
-- 🌙 **Expanded Islamic Knowledge Base**: 50+ Quranic verses from 25+ Surahs and 20+ authentic Hadiths
-- 💬 **Interactive Chat Interface**: User-friendly chat interface for asking questions
-- 📱 **Cross-Platform**: Built with Flutter for iOS, Android, Web, and Desktop support
-- 🎨 **Modern UI**: Material Design 3 with light and dark theme support
-- 🔍 **Smart Search**: Intelligent search through expanded Quran and Hadith collections
-- 📖 **Source References**: Every response includes references to Quran and Hadith sources
-- 🌐 **Multilingual Support**: Arabic text with English translations
-- ⚡ **Quick Actions**: Instant access to common topics like Prayer, Mercy, Knowledge, and more
-- 🔖 **Bookmarks**: Save your favorite responses for later reference
-- 📤 **Share**: Easily copy and share responses with proper attribution
-- ⚙️ **Settings**: Customize app preferences and view content statistics
-- 📊 **Statistics**: View comprehensive database information and collections
+- Chat screen with topic chips (Prayer, Mercy, Knowledge, Patience, Charity,
+  Family), shown until the first question is sent
+- Each reply lists its Quran or hadith references
+- Bookmarks, saved on the device with `shared_preferences`
+- Share button that opens a dialog to copy a reply and its references to the
+  clipboard or view the formatted text (there is no system share sheet)
+- Settings screen with an About dialog, the app version and a Content
+  Statistics screen. The statistics are hard-coded ("50+" verses from "25+"
+  surahs, "20+" hadiths) and do not match the dataset above
+- Light and dark Material 3 themes that follow the system setting (the theme
+  picker in Settings does not change or save the theme yet)
 
-## Technology Stack
-
-- **Framework**: Flutter (Dart)
-- **Architecture**: Clean architecture with separation of concerns
-- **State Management**: StatefulWidget with local state
-- **UI**: Material Design 3
-
-## Project Structure
+## Project structure
 
 ```
 lib/
-├── main.dart                 # Application entry point
-├── models/                   # Data models
-│   ├── message.dart         # Chat message model
-│   └── islamic_content.dart # Quran and Hadith models
-├── screens/                  # UI screens
-│   ├── splash_screen.dart   # Welcome splash screen
-│   └── chat_screen.dart     # Main chat interface
-├── services/                 # Business logic
-│   ├── islamic_knowledge_service.dart  # Quran/Hadith database
-│   └── ai_response_service.dart        # AI response generation
-└── widgets/                  # Reusable UI components
-    ├── message_bubble.dart  # Chat message bubble
-    └── chat_input.dart      # Message input field
+  main.dart                  App entry point, themes, routes
+  models/                    Message, QuranVerse and Hadith models
+  screens/                   Splash, chat, bookmarks and settings screens
+  services/
+    ai_response_service.dart        Keyword rules that build each reply
+    islamic_knowledge_service.dart  Built-in verses and hadiths, search
+    bookmark_service.dart           Bookmarks in shared_preferences
+    share_service.dart              Copy a reply to the clipboard
+  widgets/                   Message bubble and chat input
+test/widget_test.dart        Unit tests for models and services
 ```
 
-## Getting Started
+The other Markdown files (`ARCHITECTURE.md`, `FEATURES.md`, `SETUP.md`,
+`APPLICATION_FLOW.md` and others) are notes written alongside the first
+version. Where they disagree with this README or the code, the code is right.
 
-### Prerequisites
+## Running it
 
-- Flutter SDK (>=3.0.0)
-- Dart SDK (>=3.0.0)
-- For Android: Android Studio / Android SDK
-- For iOS: Xcode (macOS only)
-- For Web: Chrome browser
+Requirements: Flutter SDK with Dart 3 (`sdk: '>=3.0.0 <4.0.0'` in
+`pubspec.yaml`). CI pins Flutter 3.16.0, and the steps below assume that
+version. `pubspec.lock` is committed, so `flutter pub get` resolves the same
+package versions CI uses.
 
-### Installation
+The `android/` and `ios/` folders are complete Flutter 3.16 projects, so no
+`flutter create` step is needed. The Android build uses Groovy Gradle scripts,
+Gradle 7.5 and Android Gradle Plugin 7.3, which need Java 17 (Gradle 7.5 does
+not run on Java 21) and an Android SDK with platform 34. The Gradle wrapper
+script and jar are not committed; Flutter generates them on the first Android
+build, as its own templates do. The iOS app builds on macOS with Xcode 15 and
+CocoaPods. The `web/` folder has no icons, and desktop folders do not exist.
 
-1. Clone the repository:
 ```bash
 git clone https://github.com/tahmidbintaslim/Peace-AI.git
 cd Peace-AI
-```
-
-2. Install dependencies:
-```bash
 flutter pub get
-```
-
-3. Run the application:
-```bash
-# For mobile (Android/iOS)
-flutter run
-
-# For web
-flutter run -d chrome
-
-# For desktop
-flutter run -d windows  # or macos, linux
-```
-
-### Building for Production
-
-```bash
-# Android APK
+flutter run -d chrome   # or an Android/iOS device
+flutter test
 flutter build apk --release
-
-# iOS
-flutter build ios --release
-
-# Web
-flutter build web --release
-
-# Desktop
-flutter build windows --release  # or macos, linux
+flutter build ios --release --no-codesign   # macOS only
 ```
 
-## Usage
+Release APKs are signed with the debug key (`android/app/build.gradle`); set
+up your own signing before publishing to a store.
 
-1. Launch the application
-2. Wait for the splash screen to load
-3. Start chatting with Peace AI about Islamic topics
-4. Ask questions about:
-   - Quranic verses
-   - Hadith teachings
-   - Islamic principles
-   - Prayer and worship
-   - And much more!
+## Status
 
-## Sample Questions
-
-- "Tell me about Allah"
-- "What does Islam say about mercy?"
-- "Teach me about prayer"
-- "What is the meaning of Al-Fatihah?"
-- "Tell me about patience"
-- "What does Islam say about knowledge?"
-- "Teach me about charity"
-- "Tell me about good character"
-
-Or use the **Quick Actions** buttons to instantly explore popular topics!
-
-## Future Enhancements
-
-- [ ] Expand Quran and Hadith database
-- [ ] Add more languages
-- [ ] Voice input support
-- [ ] Bookmark favorite responses
-- [ ] Share functionality
-- [ ] Advanced AI integration
-- [ ] Offline mode
-- [ ] Daily reminders and notifications
+Prototype, last changed in November 2025. The CI workflow
+(`.github/workflows/flutter-ci.yml`) checks `dart format`, runs `flutter
+analyze` and `flutter test`, and builds a release APK and the web app on
+Ubuntu, plus an unsigned iOS release build on macOS.
+The `http` package is declared in `pubspec.yaml` but not used.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Issues and pull requests are welcome. See `CONTRIBUTING.md`.
 
 ## License
 
-This project is open source and available for free use.
-
-## Acknowledgments
-
-- Islamic scholars and sources for authentic knowledge
-- Flutter team for the amazing framework
-- The Muslim community for inspiration and support
-
-## Contact
-
-For questions or suggestions, please open an issue on GitHub.
-
----
-
-**Note**: This is a basic implementation. For a production application, consider:
-- Integrating with comprehensive Quran and Hadith APIs
-- Adding proper AI/ML models for better responses
-- Implementing user authentication
-- Adding data persistence
-- Enhancing security measures
-- Conducting thorough Islamic scholarship review
+MIT. See [LICENSE](LICENSE).

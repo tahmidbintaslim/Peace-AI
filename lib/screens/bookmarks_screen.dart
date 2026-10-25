@@ -104,7 +104,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       Icon(
                         Icons.bookmark_border,
                         size: 64,
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.3),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -115,7 +118,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       Text(
                         'Save your favorite responses here',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant
+                                  .withOpacity(0.7),
                             ),
                       ),
                     ],
