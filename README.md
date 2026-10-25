@@ -67,32 +67,36 @@ version. Where they disagree with this README or the code, the code is right.
 
 Requirements: Flutter SDK with Dart 3 (`sdk: '>=3.0.0 <4.0.0'` in
 `pubspec.yaml`). CI pins Flutter 3.16.0, and the steps below assume that
-version. The Android files use Groovy Gradle scripts; newer Flutter releases
-generate Kotlin script (`.gradle.kts`) templates instead, which `flutter
-create` may add next to the existing files.
+version. `pubspec.lock` is committed, so `flutter pub get` resolves the same
+package versions CI uses.
 
-The `android/`, `ios/` and `web/` folders are incomplete: there are no Android
-resources or Gradle wrapper, no Xcode project, and no web icons. Desktop
-folders do not exist. Generate the missing platform files first; `flutter
-create` adds missing files and leaves existing ones alone unless you pass
-`--overwrite`. `--project-name` is needed because the clone folder name
-(`Peace-AI`) is not a valid Dart package name.
+The `android/` and `ios/` folders are complete Flutter 3.16 projects, so no
+`flutter create` step is needed. The Android build uses Groovy Gradle scripts,
+Gradle 7.5 and Android Gradle Plugin 7.3, which need Java 17 (Gradle 7.5 does
+not run on Java 21) and an Android SDK with platform 34. The Gradle wrapper
+script and jar are not committed; Flutter generates them on the first Android
+build, as its own templates do. The iOS app builds on macOS with Xcode 15 and
+CocoaPods. The `web/` folder has no icons, and desktop folders do not exist.
 
 ```bash
 git clone https://github.com/tahmidbintaslim/Peace-AI.git
 cd Peace-AI
-flutter create --project-name peace_ai --platforms=android,ios,web .
 flutter pub get
 flutter run -d chrome   # or an Android/iOS device
 flutter test
+flutter build apk --release
+flutter build ios --release --no-codesign   # macOS only
 ```
+
+Release APKs are signed with the debug key (`android/app/build.gradle`); set
+up your own signing before publishing to a store.
 
 ## Status
 
 Prototype, last changed in November 2025. The CI workflow
-(`.github/workflows/flutter-ci.yml`) fails on `main` at its `dart format`
-check, so the analyze, test and build steps after it have not run there.
-Open draft pull request #3 applies `dart format` but has not been merged.
+(`.github/workflows/flutter-ci.yml`) checks `dart format`, runs `flutter
+analyze` and `flutter test`, and builds a release APK and the web app on
+Ubuntu, plus an unsigned iOS release build on macOS.
 The `http` package is declared in `pubspec.yaml` but not used.
 
 ## Contributing
