@@ -23,12 +23,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader('Appearance'),
           _buildThemeTile(),
           const Divider(),
-          
           _buildSectionHeader('About'),
           _buildAboutTile(),
           _buildVersionTile(),
           const Divider(),
-          
           _buildSectionHeader('Content'),
           _buildStatisticsTile(),
         ],

@@ -28,7 +28,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void _addWelcomeMessage() {
     final welcomeMessage = Message(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      text: 'Assalamu Alaikum! 🌙\n\nWelcome to Peace AI, your Islamic knowledge assistant. '
+      text:
+          'Assalamu Alaikum! 🌙\n\nWelcome to Peace AI, your Islamic knowledge assistant. '
           'I can help you learn about the Quran and Hadith. Feel free to ask me anything about:\n\n'
           '• Islamic teachings\n'
           '• Quranic verses\n'
@@ -109,7 +110,10 @@ class _ChatScreenState extends State<ChatScreen> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
+                  .withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 8),
@@ -210,7 +214,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         Icon(
                           Icons.chat_bubble_outline,
                           size: 64,
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.3),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -230,8 +237,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
           ),
-          if (!_isLoading && _messages.length <= 1)
-            _buildQuickActions(),
+          if (!_isLoading && _messages.length <= 1) _buildQuickActions(),
           if (_isLoading)
             Padding(
               padding: const EdgeInsets.all(8.0),
