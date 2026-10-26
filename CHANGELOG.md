@@ -60,9 +60,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Expanded Quran database (50+ verses from 25+ Surahs)
-- Expanded Hadith collection (20+ authentic Hadiths from major collections)
+### Added (October 2026)
+- Complete Flutter 3.16 Android and iOS platform projects
+- GitHub Pages deployment of the web build (`.github/workflows/deploy-pages.yml`)
+- Web icons, favicon and maskable icons that `web/index.html` and the manifest already referenced
+- Dependabot configuration for pub packages and GitHub Actions
+- Widget test for the Content Statistics screen
+
+### Changed (October 2026)
+- Content Statistics reads its counts from the dataset instead of hard-coded "50+" / "25+" / "20+" values
+- Removed the unused `http` dependency
+- CI: Java 17, unsigned iOS build on macOS, read-only token, `actions/checkout@v4` in every job
+- Moved the first-draft notes (ARCHITECTURE, FEATURES, SETUP and others) to `docs/archive/`
+- Applied `dart format` and removed the unused import that failed `flutter analyze`
+
+### Added (November 2025)
+- Expanded Quran database (46 verses from 29 surahs)
+- Expanded Hadith collection (20 hadiths from four collections)
 - Quick action buttons for common queries (Prayer, Mercy, Knowledge, Patience, Charity, Family)
 - Bookmarks feature to save favorite responses
 - Share functionality to copy and share responses
