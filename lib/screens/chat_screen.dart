@@ -188,7 +188,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   title: const Text('About Peace AI'),
                   content: const Text(
                     'Peace AI is an open-source Islamic knowledge assistant powered by the Quran and Hadith.\n\n'
-                    'This application helps you explore Islamic teachings and provides responses based on authentic sources.\n\n'
+                    'This application helps you explore Islamic teachings with Quran verses and hadiths from a small built-in dataset. The texts have not been reviewed by a scholar.\n\n'
                     'Built with Flutter for cross-platform support.',
                   ),
                   actions: [

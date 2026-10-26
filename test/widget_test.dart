@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peace_ai/models/message.dart';
 import 'package:peace_ai/models/islamic_content.dart';
+import 'package:peace_ai/screens/settings_screen.dart';
 import 'package:peace_ai/services/islamic_knowledge_service.dart';
 import 'package:peace_ai/services/ai_response_service.dart';
 
@@ -223,6 +225,28 @@ void main() {
       expect(response, isNotNull);
       expect(response.text, isNotEmpty);
       expect(response.text, contains('knowledge base'));
+    });
+  });
+
+  group('Content Statistics Screen', () {
+    testWidgets('Shows the counts of the built-in dataset', (tester) async {
+      final service = IslamicKnowledgeService();
+      final surahs = service.getSurahNames().length;
+      final collections =
+          service.getAllHadiths().map((h) => h.collection).toSet();
+
+      await tester.pumpWidget(const MaterialApp(home: StatisticsScreen()));
+
+      expect(find.text('${service.totalVerses}'), findsOneWidget);
+      expect(find.text('Verses from $surahs surahs'), findsOneWidget);
+      expect(find.text('${service.totalHadiths}'), findsOneWidget);
+      expect(
+        find.text('From ${collections.length} collections'),
+        findsOneWidget,
+      );
+      for (final name in collections) {
+        expect(find.text(name), findsOneWidget);
+      }
     });
   });
 }

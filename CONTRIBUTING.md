@@ -34,8 +34,7 @@ We welcome enhancement suggestions! Please open an issue with:
 
 ### Prerequisites
 
-- Flutter SDK (>=3.0.0)
-- Dart SDK (>=3.0.0)
+- Flutter SDK 3.16.0, the version CI pins (it ships Dart 3.2.0)
 - Git
 - Code editor (VS Code, Android Studio, or IntelliJ IDEA recommended)
 

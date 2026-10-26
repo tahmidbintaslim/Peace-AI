@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/islamic_knowledge_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -84,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'This application helps you explore Islamic teachings and provides responses based on authentic sources.',
+                    'This application helps you explore Islamic teachings with Quran verses and hadiths from a small built-in dataset. The texts have not been reviewed by a scholar.',
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 16),
@@ -200,7 +201,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showThemeChangedMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Theme preference saved (restart app to apply)'),
+        content: Text(
+            'Theme setting is not saved yet. The app follows the system theme.'),
         duration: Duration(seconds: 2),
       ),
     );
@@ -212,12 +214,20 @@ class StatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final knowledge = IslamicKnowledgeService();
+    final surahCount = knowledge.getSurahNames().length;
+    final collections = knowledge
+        .getAllHadiths()
+        .map((h) => h.collection)
+        .toSet()
+        .toList()
+      ..sort();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Content Statistics'),
         elevation: 2,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,17 +235,17 @@ class StatisticsScreen extends StatelessWidget {
             _buildStatCard(
               context,
               'Quranic Verses',
-              '50+',
-              'Verses from 25+ Surahs',
+              '${knowledge.totalVerses}',
+              'Verses from $surahCount surahs',
               Icons.menu_book,
               Colors.green,
             ),
             const SizedBox(height: 16),
             _buildStatCard(
               context,
-              'Authentic Hadiths',
-              '20+',
-              'From major collections',
+              'Hadiths',
+              '${knowledge.totalHadiths}',
+              'From ${collections.length} collections',
               Icons.article,
               Colors.blue,
             ),
@@ -255,14 +265,11 @@ class StatisticsScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            const SizedBox(height: 12),
-            _buildCollectionChip(context, 'Sahih Bukhari'),
-            const SizedBox(height: 8),
-            _buildCollectionChip(context, 'Sahih Muslim'),
-            const SizedBox(height: 8),
-            _buildCollectionChip(context, 'Sunan Ibn Majah'),
-            const SizedBox(height: 8),
-            _buildCollectionChip(context, 'Sunan At-Tirmidhi'),
+            const SizedBox(height: 4),
+            for (final name in collections) ...[
+              const SizedBox(height: 8),
+              _buildCollectionChip(context, name),
+            ],
           ],
         ),
       ),

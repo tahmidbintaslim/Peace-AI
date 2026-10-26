@@ -1,11 +1,11 @@
 {
-    "name": "peace_ai",
+    "name": "Peace AI",
     "short_name": "Peace AI",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
+    "background_color": "#1B5E20",
     "theme_color": "#1B5E20",
-    "description": "Islamic Knowledge Assistant powered by Quran and Hadith",
+    "description": "Chat app that answers questions about Islam with Quran verses and hadiths from a built-in dataset",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -18,6 +18,18 @@
             "src": "icons/Icon-512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ]
 }
