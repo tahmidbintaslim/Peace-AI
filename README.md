@@ -9,7 +9,8 @@ Islam with Quran verses and hadiths from a small dataset built into the app.
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Live demo:** <https://tahmidbintaslim.github.io/Peace-AI/> (the web build,
-deployed from `main` by GitHub Actions)
+deployed from `main` by GitHub Actions; it goes live after the first deploy
+once GitHub Pages is enabled, see [Deployment](#deployment))
 
 | Chat screen | A reply with references | Dark theme |
 | --- | --- | --- |
@@ -134,7 +135,9 @@ The web build is published to GitHub Pages by
 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
 On every push to `main` (or a manual run) it builds with Flutter 3.16.0 and
 `--base-href /Peace-AI/`, then deploys `build/web` with
-`actions/deploy-pages`. Pull requests run the build only. To build the same
+`actions/deploy-pages`. Pull requests run the build only. The deploy job
+needs Settings > Pages > Build and deployment > Source set to "GitHub
+Actions"; until then it fails and the URL returns 404. To build the same
 output locally:
 
 ```bash
@@ -169,9 +172,9 @@ docs/archive/                First-draft notes from November 2025 (out of date)
 
 ## Status and roadmap
 
-Prototype. The app logic dates from November 2025; the Android and iOS
-projects, CI, formatting fixes and the web deployment were added in October
-2026. Known limitations:
+Prototype. The app logic and the first CI workflow date from November 2025.
+In October 2026 the Android and iOS projects and the web deployment were
+added, and CI and formatting were fixed. Known limitations:
 
 - Matching is by substring, so short keywords fire inside other words, and
   multi-word questions without a topic word rarely find anything.

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2025-11-17
 
+> Note added in October 2026: the Desktop, Windows, macOS and Linux entries
+> below were never true of the repository, which has no desktop folders. The
+> iOS project sets a deployment target of iOS 11.0, not iOS 12+.
+
 ### Added
 - Initial release of Peace AI
 - Flutter-based cross-platform application (iOS, Android, Web, Desktop)
@@ -99,12 +103,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [ ] Natural Language Processing for better query understanding
 - [ ] Vector embeddings for semantic search
 - [ ] User authentication and profiles
-- [ ] Bookmark and favorites functionality
-- [ ] Share responses feature
+- [x] Bookmarks (shipped in November 2025)
+- [x] Share responses by copying them to the clipboard (shipped in November 2025)
 - [ ] Daily reminders and notifications
 - [ ] Multilingual support (Arabic, Urdu, French, etc.)
 - [ ] Voice input and output
-- [ ] Offline mode with local database
+- [x] Offline use on Android and iOS: the dataset is built into the app (there is no database)
 - [ ] Reading progress tracking
 - [ ] Tafsir (commentary) integration
 - [ ] Prayer times feature
