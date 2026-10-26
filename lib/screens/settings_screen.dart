@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'This application helps you explore Islamic teachings and provides responses based on authentic sources.',
+                    'This application helps you explore Islamic teachings with Quran verses and hadiths from a small built-in dataset. The texts have not been reviewed by a scholar.',
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 16),
@@ -201,7 +201,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showThemeChangedMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Theme preference saved (restart app to apply)'),
+        content: Text(
+            'Theme setting is not saved yet. The app follows the system theme.'),
         duration: Duration(seconds: 2),
       ),
     );
