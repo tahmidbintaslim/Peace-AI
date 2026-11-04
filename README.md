@@ -1,7 +1,40 @@
+<div align="center">
+
 # Peace AI
 
-A Flutter chat app that answers questions about Islam with Quran verses and
-hadiths from a small dataset built into the app.
+A Flutter chat app that answers questions about Islam with Quran verses and hadiths from a small built-in dataset.
+
+[![Flutter CI](https://github.com/tahmidbintaslim/Peace-AI/actions/workflows/flutter-ci.yml/badge.svg?branch=main)](https://github.com/tahmidbintaslim/Peace-AI/actions/workflows/flutter-ci.yml)
+[![License: MIT](https://img.shields.io/github/license/tahmidbintaslim/Peace-AI)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/tahmidbintaslim/Peace-AI)](https://github.com/tahmidbintaslim/Peace-AI/commits/main)
+[![GitHub stars](https://img.shields.io/github/stars/tahmidbintaslim/Peace-AI?style=flat)](https://github.com/tahmidbintaslim/Peace-AI/stargazers)
+
+</div>
+
+## Contents
+
+- [Quick start](#quick-start)
+- [What it is](#what-it-is)
+- [Features](#features)
+- [Project structure](#project-structure)
+- [Running it](#running-it)
+- [Status and roadmap](#status-and-roadmap)
+- [Contributing](#contributing)
+- [Security](#security)
+- [License](#license)
+
+## Quick start
+
+You need the Flutter SDK (CI uses 3.16.0).
+
+```bash
+git clone https://github.com/tahmidbintaslim/Peace-AI.git
+cd Peace-AI
+flutter pub get
+flutter run -d chrome
+```
+
+See [Running it](#running-it) for Android, iOS and release builds.
 
 ## What it is
 
@@ -91,17 +124,40 @@ flutter build ios --release --no-codesign   # macOS only
 Release APKs are signed with the debug key (`android/app/build.gradle`); set
 up your own signing before publishing to a store.
 
-## Status
+## Status and roadmap
 
 Prototype, last changed in November 2025. The CI workflow
 (`.github/workflows/flutter-ci.yml`) checks `dart format`, runs `flutter
 analyze` and `flutter test`, and builds a release APK and the web app on
 Ubuntu, plus an unsigned iOS release build on macOS.
-The `http` package is declared in `pubspec.yaml` but not used.
+
+Known limitations, all visible in the code today:
+
+- No AI model and no network call: replies come from keyword rules, and the
+  plain substring checks can misfire ("hi" inside "this" triggers the
+  greeting).
+- Multi-word questions rarely match, since free text is searched as one
+  whole phrase.
+- The dataset is small (46 verses, 20 hadiths) and has not been reviewed by
+  a scholar.
+- The Content Statistics screen shows hard-coded figures that do not match
+  the dataset.
+- The theme picker in Settings does not change or save the theme.
+- Sharing copies text to the clipboard; there is no system share sheet.
+- The `http` package is declared in `pubspec.yaml` but not used.
+- Release APKs are signed with the debug key.
+- The `web/` folder has no icons, and there are no desktop builds.
+
+Each item above is a candidate for future work. There is no published
+roadmap or release date.
 
 ## Contributing
 
-Issues and pull requests are welcome. See `CONTRIBUTING.md`.
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Security
+
+To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## License
 

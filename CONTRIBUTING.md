@@ -125,6 +125,8 @@ Update Quran verse database with new entries
 If you have questions, feel free to:
 - Open an issue
 - Start a discussion
-- Reach out to the maintainers
+- Email the maintainer at tahmidbintaslimrafi@gmail.com
+
+Security issues go by email only; see [SECURITY.md](SECURITY.md).
 
 Thank you for contributing to Peace AI!
