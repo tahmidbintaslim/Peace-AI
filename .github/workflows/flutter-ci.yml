@@ -28,7 +28,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
       with:
-        flutter-version: '3.16.0'
+        flutter-version: '3.24.5'
         channel: 'stable'
     
     - name: Install dependencies
@@ -56,23 +56,18 @@ jobs:
         path: build/app/outputs/flutter-apk/app-release.apk
 
   build-ios:
-    # Flutter 3.16 supports Xcode 15; macos-14 ships Xcode 15.x.
-    runs-on: macos-14
+    # macos-14 was retired on 2026-11-02. macos-15 ships Xcode 16, which needs Flutter 3.24+.
+    runs-on: macos-15
 
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         persist-credentials: false
 
-    - name: Select Xcode 15
-      uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
-      with:
-        xcode-version: '15.4'
-
     - name: Set up Flutter
       uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
       with:
-        flutter-version: '3.16.0'
+        flutter-version: '3.24.5'
         channel: 'stable'
 
     - name: Install dependencies
