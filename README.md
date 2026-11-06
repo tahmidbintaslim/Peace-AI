@@ -25,7 +25,7 @@ A Flutter chat app that answers questions about Islam with Quran verses and hadi
 
 ## Quick start
 
-You need the Flutter SDK (CI uses 3.16.0).
+You need the Flutter SDK (CI uses 3.24.5).
 
 ```bash
 git clone https://github.com/tahmidbintaslim/Peace-AI.git
@@ -99,7 +99,7 @@ version. Where they disagree with this README or the code, the code is right.
 ## Running it
 
 Requirements: Flutter SDK with Dart 3 (`sdk: '>=3.0.0 <4.0.0'` in
-`pubspec.yaml`). CI pins Flutter 3.16.0, and the steps below assume that
+`pubspec.yaml`). CI pins Flutter 3.24.5, and the steps below assume that
 version. `pubspec.lock` is committed, so `flutter pub get` resolves the same
 package versions CI uses.
 
