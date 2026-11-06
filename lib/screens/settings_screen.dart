@@ -277,11 +277,12 @@ class StatisticsScreen extends StatelessWidget {
     IconData icon,
     Color color,
   ) {
+    final surface = Theme.of(context).colorScheme.surfaceContainerHighest;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+        color: surface.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: color.withOpacity(0.3),

@@ -88,7 +88,7 @@ class _MessageBubbleState extends State<MessageBubble> {
                   decoration: BoxDecoration(
                     color: isUser
                         ? colorScheme.primary
-                        : colorScheme.surfaceVariant,
+                        : colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(16),
                       topRight: const Radius.circular(16),
