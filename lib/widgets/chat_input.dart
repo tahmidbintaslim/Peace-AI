@@ -45,6 +45,7 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -72,7 +73,7 @@ class _ChatInputState extends State<ChatInput> {
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                    fillColor: colorScheme.surfaceContainerHighest,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 12,
@@ -87,7 +88,7 @@ class _ChatInputState extends State<ChatInput> {
               Material(
                 color: _hasText && widget.enabled
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.surfaceVariant,
+                    : colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(24),
                 child: InkWell(
                   onTap: _hasText && widget.enabled ? _handleSend : null,
