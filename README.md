@@ -15,6 +15,7 @@ A Flutter chat app that answers questions about Islam with Quran verses and hadi
 
 - [Quick start](#quick-start)
 - [What it is](#what-it-is)
+- [Direction](#direction)
 - [Features](#features)
 - [Project structure](#project-structure)
 - [Running it](#running-it)
@@ -61,6 +62,35 @@ The dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
 
 The texts and translations have not been reviewed by a scholar. Check them
 against a trusted source before relying on them.
+
+## Direction
+
+Peace AI is becoming an open-source search tool for the Quran and hadith in
+Bangla and English: you ask in your own words and get the actual verses and
+hadith, each with its reference and, for hadith, its grading. None of this is
+built yet. The app today is the keyword prototype described above.
+
+Rules the project keeps:
+
+- **No rulings.** The app never writes a fatwa or its own interpretation. For
+  a ruling it tells you to ask a scholar.
+- **No answer without a source.** A model may find and rank texts, but every
+  text shown is the stored original, word for word, with its reference.
+- **Hadith show their grading.**
+- **Free, no ads, no tracking.** Costs are to be met by donations.
+
+Planned work, in order:
+
+1. Replace the hand-typed dataset with complete sources whose licences allow
+   it. The Tanzil Arabic Quran text is CC BY 3.0 for verbatim copies with
+   credit. Translations are copyrighted, so each one needs written permission
+   from its publisher before it ships.
+2. Search by meaning over that corpus, so a question such as "how to be
+   patient when sick" finds the right texts. Results are retrieved, never
+   generated.
+3. A Bangla translation beside the English one.
+4. Review of the dataset by a scholar, and a "report an error" button on
+   every answer.
 
 ## Features
 
@@ -148,8 +178,8 @@ Known limitations, all visible in the code today:
 - Release APKs are signed with the debug key.
 - The `web/` folder has no icons, and there are no desktop builds.
 
-Each item above is a candidate for future work. There is no published
-roadmap or release date.
+Each item above is a candidate for future work. [Direction](#direction)
+lists the planned order. There is no release date.
 
 ## Contributing
 
