@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  http: ^1.1.0
   shared_preferences: ^2.2.2
 
 dev_dependencies:
@@ -23,3 +22,7 @@ flutter:
   assets:
     - assets/images/
     - assets/data/
+  fonts:
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf

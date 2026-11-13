@@ -40,20 +40,35 @@ See [Running it](#running-it) for Android, iOS and release builds.
 ## What it is
 
 You type a question (or tap a topic chip), and the app replies with a short
-fixed explanation plus at most one Quran verse (Arabic text and English
-translation) and at most one hadith (English translation only), each with its
-reference. Some replies, such as the greeting or the no-match message, have
-no verse or hadith.
+line of explanation plus at most one Quran verse (Arabic text and English
+translation) and at most one hadith (English translation and narrator), each
+set as a quoted block under its reference. Some replies, such as the greeting,
+the help message or the no-match message, have no verse or hadith.
 
 Despite the name, there is no AI model and no network call. Replies come from
-keyword rules in `lib/services/ai_response_service.dart`: the lowercased query
-is checked for substrings tied to topics such as prayer, mercy, patience or
-charity. The checks are plain substring matches, so "hi" inside "this" or
-"which" triggers the greeting. A query that contains "what", "how", "help",
-"guidance" or "advice" and no earlier topic word gets a fixed help message and
-a verse picked by the clock. Anything else is searched as one whole phrase in
-the verse translations and surah names, then in the hadith translations and
-narrator names, so a multi-word question rarely matches.
+keyword rules in `lib/services/ai_response_service.dart`, checked in this
+order:
+
+1. A greeting word ("salam", "hello", "hi") gets a greeting.
+2. A word tied to a topic such as prayer, mercy, patience or charity gets
+   that topic's fixed line and its verse or hadith.
+3. "help", "guidance" or "advice" gets a help message listing the topics.
+4. Anything else is searched by its significant words (common words such as
+   "what", "the" or "about" are ignored) in the verse translations and surah
+   names and in the hadith translations and narrator names. The texts are
+   ranked by how many of those words they contain, and the best verse and
+   the best hadith are shown if they tie; otherwise only the better one.
+
+Keywords and search words match whole words only, so "hi" inside "this" no
+longer triggers the greeting. A trailing "s" is ignored ("parents" matches
+"parent"), but there is no real stemming or search by meaning: "patient" does
+not match "patience", and a question whose words appear in no text gets the
+no-match message.
+
+The first message in the chat and the About dialog both say this plainly:
+answers come from a small built-in set of texts with references, picked by
+keyword rules, the texts have not been reviewed by a scholar, and for a
+ruling you should ask a scholar.
 
 The dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
 
@@ -100,17 +115,20 @@ Planned work, in order:
 - Bookmarks, saved on the device with `shared_preferences`
 - Share button that opens a dialog to copy a reply and its references to the
   clipboard or view the formatted text (there is no system share sheet)
-- Settings screen with an About dialog, the app version and a Content
-  Statistics screen. The statistics are hard-coded ("50+" verses from "25+"
-  surahs, "20+" hadiths) and do not match the dataset above
-- Light and dark Material 3 themes that follow the system setting (the theme
-  picker in Settings does not change or save the theme yet)
+- Settings screen with a theme picker, an About dialog, the app version and
+  a Content Statistics screen whose figures are counted from the dataset
+- Light and dark themes styled after a printed page: off-white paper, ink
+  text, references in a rubric red, and the Arabic set in the bundled Amiri
+  typeface with a verse-end mark carrying the ayah number. The theme follows
+  the system setting until you pick Light or Dark in Settings; the choice is
+  saved on the device with `shared_preferences`
 
 ## Project structure
 
 ```
 lib/
-  main.dart                  App entry point, themes, routes
+  main.dart                  App entry point and routes
+  theme.dart                 Light and dark themes
   models/                    Message, QuranVerse and Hadith models
   screens/                   Splash, chat, bookmarks and settings screens
   services/
@@ -118,8 +136,10 @@ lib/
     islamic_knowledge_service.dart  Built-in verses and hadiths, search
     bookmark_service.dart           Bookmarks in shared_preferences
     share_service.dart              Copy a reply to the clipboard
+    theme_service.dart              Chosen theme in shared_preferences
   widgets/                   Message bubble and chat input
-test/widget_test.dart        Unit tests for models and services
+assets/fonts/                Amiri Regular 1.000 and its licence (SIL OFL 1.1)
+test/widget_test.dart        Unit and widget tests
 ```
 
 The other Markdown files (`ARCHITECTURE.md`, `FEATURES.md`, `SETUP.md`,
@@ -156,25 +176,21 @@ up your own signing before publishing to a store.
 
 ## Status and roadmap
 
-Prototype, last changed in November 2025. The CI workflow
+Prototype, last changed in November 2026. The CI workflow
 (`.github/workflows/flutter-ci.yml`) checks `dart format`, runs `flutter
 analyze` and `flutter test`, and builds a release APK and the web app on
 Ubuntu, plus an unsigned iOS release build on macOS.
 
 Known limitations, all visible in the code today:
 
-- No AI model and no network call: replies come from keyword rules, and the
-  plain substring checks can misfire ("hi" inside "this" triggers the
-  greeting).
-- Multi-word questions rarely match, since free text is searched as one
-  whole phrase.
+- No AI model and no network call: replies come from keyword rules.
+- Free text is matched word by word, with no stemming and no search by
+  meaning, so a question only finds a text that shares its words.
+- Bookmarks saved by earlier versions show their verse twice, once in the
+  old reply text and once as a quoted block.
 - The dataset is small (46 verses, 20 hadiths) and has not been reviewed by
   a scholar.
-- The Content Statistics screen shows hard-coded figures that do not match
-  the dataset.
-- The theme picker in Settings does not change or save the theme.
 - Sharing copies text to the clipboard; there is no system share sheet.
-- The `http` package is declared in `pubspec.yaml` but not used.
 - Release APKs are signed with the debug key.
 - The `web/` folder has no icons, and there are no desktop builds.
 

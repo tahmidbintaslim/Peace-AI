@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../models/islamic_content.dart';
 import '../models/message.dart';
+import 'islamic_knowledge_service.dart';
 
 class ShareService {
   /// Share a message text
   static Future<void> shareMessage(
       BuildContext context, Message message) async {
-    final text = _formatMessageForSharing(message);
+    final text = formatMessage(message);
     await _copyToClipboard(context, text);
   }
 
-  /// Format message for sharing
-  static String _formatMessageForSharing(Message message) {
+  /// The reply as plain text: the explanation, then each verse or hadith
+  /// from the dataset followed by its reference.
+  static String formatMessage(Message message) {
+    final knowledge = IslamicKnowledgeService();
     final buffer = StringBuffer();
-
-    // Add message text
     buffer.writeln(message.text);
 
-    // Add references if available
-    if (message.references != null && message.references!.isNotEmpty) {
+    for (final reference in message.references ?? const <String>[]) {
+      final source = knowledge.findByReference(reference);
       buffer.writeln();
-      buffer.writeln('References:');
-      for (final ref in message.references!) {
-        buffer.writeln('- $ref');
+      if (source is QuranVerse) {
+        buffer.writeln(source.arabicText);
+        buffer.writeln(source.translation);
+      } else if (source is Hadith) {
+        buffer.writeln(source.translation);
+        buffer.writeln('Narrated by ${source.narrator}');
       }
+      buffer.writeln('($reference)');
     }
 
-    // Add attribution
     buffer.writeln();
     buffer.writeln('---');
     buffer.writeln('Shared from Peace AI');
-    buffer.writeln('Islamic Knowledge Assistant');
 
     return buffer.toString();
   }
@@ -43,7 +47,7 @@ class ShareService {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Copied to clipboard!'),
+          content: Text('Copied to clipboard'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -95,7 +99,7 @@ class ShareService {
         title: const Text('Formatted Text'),
         content: SingleChildScrollView(
           child: SelectableText(
-            _formatMessageForSharing(message),
+            formatMessage(message),
             style: const TextStyle(fontSize: 14),
           ),
         ),

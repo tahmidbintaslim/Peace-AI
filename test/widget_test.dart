@@ -1,4 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:peace_ai/screens/settings_screen.dart';
+import 'package:peace_ai/services/share_service.dart';
+import 'package:peace_ai/services/theme_service.dart';
+import 'package:peace_ai/widgets/message_bubble.dart';
 import 'package:peace_ai/models/message.dart';
 import 'package:peace_ai/models/islamic_content.dart';
 import 'package:peace_ai/services/islamic_knowledge_service.dart';
@@ -150,8 +156,61 @@ void main() {
     });
 
     test('Has correct statistics', () {
-      expect(service.totalVerses, greaterThan(0));
-      expect(service.totalHadiths, greaterThan(0));
+      expect(service.totalVerses, service.getAllVerses().length);
+      expect(service.totalHadiths, service.getAllHadiths().length);
+      final collections = service.hadithCollections;
+      expect(collections.values.reduce((a, b) => a + b), service.totalHadiths);
+      expect(collections.keys, contains('Sahih Bukhari'));
+    });
+
+    test('Every reference resolves to its own text', () {
+      for (final verse in service.getAllVerses()) {
+        expect(service.findByReference(verse.reference), same(verse));
+      }
+      for (final hadith in service.getAllHadiths()) {
+        expect(service.findByReference(hadith.reference), same(hadith));
+      }
+      expect(service.findByReference('No Such Book 1:1'), isNull);
+    });
+
+    test('Significant words drop stop words and match whole words', () {
+      expect(
+        IslamicKnowledgeService.significantWords('What does this say?'),
+        isEmpty,
+      );
+      expect(
+        IslamicKnowledgeService.significantWords('the rights of parents'),
+        {'right', 'parent'},
+      );
+      expect(IslamicKnowledgeService.matchCount('hi', 'this thing'), 0);
+    });
+
+    test('Ranks by number of matching words', () {
+      final verses = service.getAllVerses();
+      // A question built from two words of one verse must rank it first.
+      final target = verses.firstWhere(
+        (v) =>
+            IslamicKnowledgeService.significantWords(v.translation).length > 2,
+      );
+      final words = IslamicKnowledgeService.significantWords(
+        target.translation,
+      ).toList();
+      final query = 'what about ${words[0]} and the ${words[1]} ${words[2]}';
+      final ranked = service.rankQuran(query);
+      expect(ranked, isNotEmpty);
+      final top = IslamicKnowledgeService.matchCount(
+        query,
+        IslamicKnowledgeService.verseSearchText(ranked.first),
+      );
+      expect(top, 3);
+      for (final verse in ranked) {
+        final score = IslamicKnowledgeService.matchCount(
+          query,
+          IslamicKnowledgeService.verseSearchText(verse),
+        );
+        expect(score, inInclusiveRange(1, top));
+      }
+      expect(service.rankQuran('xyzabc123unknown'), isEmpty);
     });
   });
 
@@ -218,11 +277,102 @@ void main() {
       expect(response1.id, isNot(equals(response2.id)));
     });
 
+    test('Greeting needs a whole word, not "hi" inside "this"', () async {
+      final greeting = await service.generateResponse('Hi there');
+      expect(greeting.text, contains('Assalamu Alaikum'));
+
+      final other = await service.generateResponse('this xyzabc123unknown');
+      expect(other.text, isNot(contains('Assalamu Alaikum')));
+    });
+
+    test('Multi-word question finds a text by its words', () async {
+      final hadith = IslamicKnowledgeService().getAllHadiths().firstWhere(
+            (h) => h.translation.contains('laugh little and weep much'),
+          );
+      final response = await service.generateResponse(
+        'Why would we laugh little and weep?',
+      );
+      expect(response.references, contains(hadith.reference));
+    });
+
+    test('Every reference in a reply resolves in the dataset', () async {
+      final response = await service.generateResponse('tell me about mercy');
+      final knowledge = IslamicKnowledgeService();
+      for (final reference in response.references!) {
+        expect(knowledge.findByReference(reference), isNotNull);
+      }
+    });
+
     test('Handles unknown queries gracefully', () async {
       final response = await service.generateResponse('xyzabc123unknown');
       expect(response, isNotNull);
       expect(response.text, isNotEmpty);
-      expect(response.text, contains('knowledge base'));
+      expect(response.text, contains('Nothing in the built-in texts'));
+      expect(response.references, isNull);
+    });
+  });
+
+  group('Theme Service Tests', () {
+    test('Saves the chosen theme and loads it again', () async {
+      SharedPreferences.setMockInitialValues({});
+      await ThemeService.load();
+      expect(ThemeService.mode.value, ThemeMode.system);
+
+      await ThemeService.setMode(ThemeMode.dark);
+      expect(ThemeService.mode.value, ThemeMode.dark);
+
+      ThemeService.mode.value = ThemeMode.system;
+      await ThemeService.load();
+      expect(ThemeService.mode.value, ThemeMode.dark);
+    });
+  });
+
+  group('Source display Tests', () {
+    final verse = IslamicKnowledgeService().getVerse(1, 1)!;
+    final message = Message(
+      id: 'm1',
+      text: 'Explanation',
+      isUser: false,
+      timestamp: DateTime(2025),
+      references: [verse.reference, 'Unknown Book 9:9'],
+    );
+
+    test('Shared text carries the verse and its reference', () {
+      final text = ShareService.formatMessage(message);
+      expect(text, contains(verse.arabicText));
+      expect(text, contains(verse.translation));
+      expect(text, contains('(${verse.reference})'));
+      expect(text, contains('(Unknown Book 9:9)'));
+    });
+
+    testWidgets('Reply shows the verse with its reference', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(child: MessageBubble(message: message)),
+          ),
+        ),
+      );
+      expect(find.textContaining(verse.reference), findsOneWidget);
+      expect(find.text(verse.translation), findsOneWidget);
+      // A reference missing from the dataset is still shown.
+      expect(find.textContaining('Unknown Book 9:9'), findsOneWidget);
+    });
+
+    testWidgets('Statistics are counted from the dataset', (tester) async {
+      final knowledge = IslamicKnowledgeService();
+      await tester.pumpWidget(const MaterialApp(home: StatisticsScreen()));
+      expect(find.text('${knowledge.totalVerses}'), findsOneWidget);
+      expect(find.text('${knowledge.totalHadiths}'), findsOneWidget);
+      expect(find.text('50+'), findsNothing);
+    });
+
+    test('Notice says where answers come from', () {
+      final notice = sourceNotice(IslamicKnowledgeService());
+      expect(notice, contains('46 Quran verses and 20 hadiths'));
+      expect(notice, contains('not been reviewed by a scholar'));
+      expect(notice, contains('For a ruling, ask a scholar'));
     });
   });
 }

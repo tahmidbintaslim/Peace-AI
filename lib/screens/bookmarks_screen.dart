@@ -84,7 +84,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bookmarks'),
-        elevation: 2,
         actions: [
           if (_bookmarks.isNotEmpty)
             IconButton(
@@ -101,34 +100,24 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.bookmark_border,
-                        size: 64,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.3),
-                      ),
-                      const SizedBox(height: 16),
                       Text(
                         'No bookmarks yet',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Save your favorite responses here',
+                        'Tap Save under an answer to keep it here.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .onSurfaceVariant
-                                  .withOpacity(0.7),
+                                  .onSurfaceVariant,
                             ),
                       ),
                     ],
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: _bookmarks.length,
                   itemBuilder: (context, index) {
                     final message = _bookmarks[index];
@@ -138,8 +127,11 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       background: Container(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 16),
-                        color: Colors.red,
-                        child: const Icon(Icons.delete, color: Colors.white),
+                        color: Theme.of(context).colorScheme.error,
+                        child: Icon(
+                          Icons.delete_outline,
+                          color: Theme.of(context).colorScheme.onError,
+                        ),
                       ),
                       onDismissed: (_) => _removeBookmark(message.id),
                       child: MessageBubble(message: message),
