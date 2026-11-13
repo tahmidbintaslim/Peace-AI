@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/message.dart';
 import '../services/bookmark_service.dart';
+import '../widgets/common.dart';
 import '../widgets/message_bubble.dart';
 
 class BookmarksScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Clear All'),
           ),
@@ -83,11 +84,11 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bookmarks'),
+        title: const Text('Saved'),
         actions: [
           if (_bookmarks.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline_rounded),
               onPressed: _clearAllBookmarks,
               tooltip: 'Clear all',
             ),
@@ -100,6 +101,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const IconTile(Icons.bookmark_border_rounded),
+                      const SizedBox(height: 16),
                       Text(
                         'No bookmarks yet',
                         style: Theme.of(context).textTheme.titleLarge,
@@ -116,27 +119,39 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                     ],
                   ),
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: _bookmarks.length,
-                  itemBuilder: (context, index) {
-                    final message = _bookmarks[index];
-                    return Dismissible(
-                      key: Key(message.id),
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 16),
-                        color: Theme.of(context).colorScheme.error,
-                        child: Icon(
-                          Icons.delete_outline,
-                          color: Theme.of(context).colorScheme.onError,
-                        ),
+              : Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
                       ),
-                      onDismissed: (_) => _removeBookmark(message.id),
-                      child: MessageBubble(message: message),
-                    );
-                  },
+                      itemCount: _bookmarks.length,
+                      itemBuilder: (context, index) {
+                        final message = _bookmarks[index];
+                        return Dismissible(
+                          key: Key(message.id),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            alignment: Alignment.centerRight,
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            padding: const EdgeInsets.only(right: 16),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.error,
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Icon(
+                              Icons.delete_outline_rounded,
+                              color: Theme.of(context).colorScheme.onError,
+                            ),
+                          ),
+                          onDismissed: (_) => _removeBookmark(message.id),
+                          child: MessageBubble(message: message),
+                        );
+                      },
+                    ),
+                  ),
                 ),
     );
   }

@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Peace AI: সূত্রসহ কুরআনের আয়াত ও হাদিস</title>
+  <meta name="description" content="প্রশ্ন লিখলে Peace AI অ্যাপের ভেতরে রাখা ৪৬টি আয়াত ও ২০টি হাদিস থেকে শব্দ মিলিয়ে লেখা দেখায়, প্রতিটির সূত্রসহ। বিনামূল্যে, বিজ্ঞাপন ও ট্র্যাকিং ছাড়া, ওপেন সোর্স।">
+  <meta name="theme-color" content="#0E7C6B">
+  <link rel="preload" href="assets/fonts/anek-bangla-bengali-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230E7C6B'/%3E%3Cpath d='M20 13v15M20 13c-2-1.6-5-2.2-9-2v15c4-.2 7 .4 9 2 2-1.6 5-2.2 9-2V11c-4-.2-7 .4-9 2Z' fill='none' stroke='%23fff' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5v13.5M12 6.5C10.3 5.2 7.5 4.6 3.5 4.8v13.5c4-.2 6.8.4 8.5 1.7 1.7-1.3 4.5-1.9 8.5-1.7V4.8c-4-.2-6.8.4-8.5 1.7Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4.5 6.5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-4 3.5V16.5a2 2 0 0 1-1.5-2Z"/><path d="M8.5 9h7M8.5 12h4.5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-4-6 4V5.5a1 1 0 0 1 1-1Z"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8.5 8-4.5 4 4.5 4M15.5 8l4.5 4-4.5 4M13.5 5.5l-3 13"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 20.5V4.5M6 5.5h11l-2.5 4 2.5 4H6"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.4 3.7 5.2 3.7 8.5s-1.2 6.1-3.7 8.5c-2.5-2.4-3.7-5.2-3.7-8.5s1.2-6.1 3.7-8.5Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13.5 6.5 19 12l-5.5 5.5"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main" data-i="skip">মূল অংশে যান</a>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#top" aria-label="Peace AI">
+      <span class="logo" aria-hidden="true"><svg class="ic"><use href="#i-book"/></svg></span>
+      <span class="brand-name" lang="en">Peace AI</span>
+    </a>
+    <nav class="nav" aria-label="সাইটের অংশ" data-i-attr="aria-label:navLabel">
+      <a href="#how" data-i="navHow">যেভাবে কাজ করে</a>
+      <a href="#shows" data-i="navShows">কী দেখায়</a>
+      <a href="#honest" data-i="navHonest">সীমা</a>
+      <a href="#open" data-i="navOpen">ওপেন সোর্স</a>
+    </nav>
+    <div class="seg" role="group" aria-label="ভাষা" data-i-attr="aria-label:langLabel">
+      <button type="button" lang="bn" data-lang="bn" aria-pressed="true">বাংলা</button>
+      <button type="button" lang="en" data-lang="en" aria-pressed="false">English</button>
+    </div>
+    <a class="btn btn-primary bar-cta" href="/app/" data-i="open">অ্যাপ খুলুন</a>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="wrap hero" id="top" aria-labelledby="hero-title">
+    <div class="hero-text">
+      <p class="eyebrow" data-i="heroEyebrow">কুরআন ও হাদিস · প্রতিটি লেখার সূত্রসহ</p>
+      <h1 id="hero-title" data-i="heroTitle">প্রশ্ন করুন, সূত্রসহ আয়াত ও হাদিস পড়ুন</h1>
+      <p class="lead" data-i="heroLead">প্রশ্ন লিখলে বা বিষয় বাছলে Peace AI অ্যাপের ভেতরে রাখা আয়াত ও হাদিস থেকে শব্দ মিলিয়ে লেখা দেখায়, প্রতিটির সূত্রসহ। বিনামূল্যে, বিজ্ঞাপন ছাড়া, অ্যাকাউন্ট ছাড়াই।</p>
+      <div class="actions">
+        <a class="btn btn-primary btn-lg" href="/app/" data-i="open">অ্যাপ খুলুন</a>
+        <a class="btn btn-soft btn-lg" href="https://github.com/tahmidbintaslim/Peace-AI" data-i="source">সোর্স কোড দেখুন</a>
+      </div>
+
+      <section class="facts" aria-labelledby="facts-title">
+        <h2 id="facts-title" class="dot-label"><span aria-hidden="true"></span><span data-i="factsTitle">অ্যাপের ভেতরে যা আছে</span></h2>
+        <div class="fact-pair">
+          <div class="card fact">
+            <svg class="ic ic-accent"><use href="#i-book"/></svg>
+            <p><span class="small muted" data-i="factVersesLabel">কুরআনের আয়াত</span><strong data-i="factVerses">৪৬টি</strong></p>
+          </div>
+          <div class="card fact">
+            <svg class="ic ic-accent"><use href="#i-chat"/></svg>
+            <p><span class="small muted" data-i="factHadithLabel">হাদিস</span><strong data-i="factHadith">২০টি</strong></p>
+          </div>
+        </div>
+        <div class="card fact fact-wide">
+          <span class="tile" aria-hidden="true"><svg class="ic"><use href="#i-search"/></svg></span>
+          <p><span class="small muted" data-i="factHowLabel">লেখা বাছাই হয়</span><strong data-i="factHow">শব্দ মিলিয়ে</strong></p>
+          <p class="fact-end"><strong data-i="factNoAi">এআই মডেল নয়</strong><span class="small accent" data-i="factOffline">ইন্টারনেট কল ছাড়া</span></p>
+        </div>
+        <p class="small muted" data-i="factNote">আয়াত আরবি ও ইংরেজি অনুবাদে, হাদিস ইংরেজি অনুবাদে। লেখাগুলো কোনো আলেম যাচাই করেননি।</p>
+      </section>
+
+      <ul class="ticks-row">
+        <li><svg class="ic ic-sm ic-accent"><use href="#i-check"/></svg><span data-i="tickFree">বিনামূল্যে</span></li>
+        <li><svg class="ic ic-sm ic-accent"><use href="#i-check"/></svg><span data-i="tickAds">বিজ্ঞাপন নেই</span></li>
+        <li><svg class="ic ic-sm ic-accent"><use href="#i-check"/></svg><span data-i="tickTrack">ট্র্যাকিং নেই</span></li>
+        <li><svg class="ic ic-sm ic-accent"><use href="#i-check"/></svg><span data-i="tickOpen">ওপেন সোর্স</span></li>
+      </ul>
+    </div>
+
+    <div class="showcase">
+      <div class="arch">
+        <div class="phone">
+          <img id="hero-shot" src="assets/app-verse.webp" width="780" height="1671" alt="Peace AI অ্যাপের স্ক্রিনশট: একটি আয়াত ও একটি হাদিস, সূত্রসহ" data-i-attr="alt:shotAlt">
+        </div>
+      </div>
+      <div class="pills" role="group" aria-label="অ্যাপের স্ক্রিন" data-i-attr="aria-label:pillsLabel">
+        <button type="button" data-shot="app-verse" aria-pressed="true" data-i="pillAsk">প্রশ্ন</button>
+        <button type="button" data-shot="app-hadith" aria-pressed="false" data-i="pillHadith">হাদিস</button>
+        <button type="button" data-shot="app-saved" aria-pressed="false" data-i="pillSaved">সংরক্ষিত</button>
+        <button type="button" data-shot="app-settings" aria-pressed="false" data-i="pillSettings">সেটিংস</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="how" aria-labelledby="how-title">
+    <div class="head">
+      <p class="eyebrow strong" data-i="howEyebrow">যেভাবে কাজ করে</p>
+      <h2 id="how-title" data-i="howTitle">তিন ধাপে</h2>
+      <p class="muted" data-i="howSub">অ্যাকাউন্ট লাগে না, কিছু সেট করতে হয় না।</p>
+    </div>
+    <ol class="grid-3">
+      <li class="card step">
+        <span class="tile tile-lg" aria-hidden="true"><svg class="ic"><use href="#i-chat"/></svg></span>
+        <p class="small accent strong" data-i="step1">ধাপ ১</p>
+        <h3 data-i="step1Title">প্রশ্ন লিখুন বা বিষয় বাছুন</h3>
+        <p class="muted" data-i="step1Body">ইংরেজিতে প্রশ্ন লিখুন, অথবা Prayer, Mercy, Patience-এর মতো ছয়টি বিষয়ের একটিতে চাপ দিন।</p>
+      </li>
+      <li class="card step">
+        <span class="tile tile-lg" aria-hidden="true"><svg class="ic"><use href="#i-search"/></svg></span>
+        <p class="small accent strong" data-i="step2">ধাপ ২</p>
+        <h3 data-i="step2Title">অ্যাপ শব্দ মিলিয়ে খোঁজে</h3>
+        <p class="muted" data-i="step2Body">আপনার প্রশ্নের শব্দগুলো ভেতরে রাখা আয়াত ও হাদিসের অনুবাদের সঙ্গে মেলানো হয়। সবকিছু আপনার যন্ত্রেই ঘটে।</p>
+      </li>
+      <li class="card step">
+        <span class="tile tile-lg" aria-hidden="true"><svg class="ic"><use href="#i-bookmark"/></svg></span>
+        <p class="small accent strong" data-i="step3">ধাপ ৩</p>
+        <h3 data-i="step3Title">সূত্রসহ পড়ুন, রেখে দিন</h3>
+        <p class="muted" data-i="step3Body">সবচেয়ে কাছের আয়াত বা হাদিসটি তার সূত্রসহ দেখুন। চাইলে সংরক্ষণ করুন বা লেখাটি কপি করুন।</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="wrap section" id="shows" aria-labelledby="shows-title">
+    <div class="head">
+      <p class="eyebrow strong" data-i="showsEyebrow">কী দেখায়</p>
+      <h2 id="shows-title" data-i="showsTitle">আসল লেখা, পাশে তার সূত্র</h2>
+      <p class="muted" data-i="showsSub">নিচের দুটি লেখা অ্যাপের ডেটাসেট থেকে হুবহু নেওয়া, অ্যাপে যেভাবে দেখায় সেভাবেই।</p>
+    </div>
+
+    <ul class="rows">
+      <li class="row">
+        <div class="row-text">
+          <p class="tag"><span class="tile" aria-hidden="true"><svg class="ic"><use href="#i-book"/></svg></span><span data-i="f1Tag">উত্তর</span></p>
+          <h3 data-i="f1Title">প্রতিটি উত্তরে সূত্র থাকে</h3>
+          <p class="muted" data-i="f1Body">একটি উত্তরে সর্বোচ্চ একটি আয়াত ও একটি হাদিস থাকে। আয়াতের সঙ্গে সূরার নাম ও আয়াত নম্বর, হাদিসের সঙ্গে গ্রন্থের নাম, নম্বর ও বর্ণনাকারী।</p>
+          <ul class="ticks">
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="f1a">আয়াত: আরবি লেখা ও ইংরেজি অনুবাদ</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="f1b">হাদিস: ইংরেজি অনুবাদ ও বর্ণনাকারী</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="f1c">মিল না পেলে অ্যাপ তা সরাসরি বলে</span></li>
+          </ul>
+        </div>
+        <div class="samples">
+          <article class="card sample">
+            <div class="source">
+              <p class="source-ref" lang="en">Quran · Al-Baqarah 2:153</p>
+              <p class="arabic" lang="ar" dir="rtl">يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ</p>
+              <p class="reading" lang="en">O you who have believed, seek help through patience and prayer.</p>
+            </div>
+            <div class="source">
+              <p class="source-ref" lang="en">Hadith · Sahih Muslim 42:7138</p>
+              <p class="reading" lang="en">How wonderful is the affair of the believer, for all his affairs are good. If something good happens to him, he is grateful, and if something bad happens, he is patient.</p>
+              <p class="caption muted" lang="en">Narrated by Suhaib</p>
+            </div>
+          </article>
+        </div>
+      </li>
+
+      <li class="row row-flip">
+        <div class="row-text">
+          <p class="tag"><span class="tile" aria-hidden="true"><svg class="ic"><use href="#i-bookmark"/></svg></span><span data-i="f2Tag">সংরক্ষণ</span></p>
+          <h3 data-i="f2Title">রেখে দিন, কপি করুন, রাতে পড়ুন</h3>
+          <p class="muted" data-i="f2Body">সূত্রসহ যেকোনো উত্তর সংরক্ষণ করা যায়। সংরক্ষিত লেখা আপনার যন্ত্রেই থাকে।</p>
+          <ul class="ticks">
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="f2a">সংরক্ষিত উত্তরের আলাদা তালিকা</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="f2b">সূত্রসহ লেখা ক্লিপবোর্ডে কপি</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="f2c">হালকা ও গাঢ় থিম; পছন্দটি মনে থাকে</span></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <svg class="arch-lines" viewBox="0 0 400 480" fill="none" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+            <path d="M20 480V200C20 104 110 42 200 20C290 42 380 104 380 200V480" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M44 480V206C44 122 122 66 200 46C278 66 356 122 356 206V480" stroke="currentColor" stroke-opacity=".5"/>
+          </svg>
+          <div class="phone phone-sm">
+            <img src="assets/app-verse-dark.webp" width="780" height="1671" loading="lazy" decoding="async" alt="গাঢ় থিমে Peace AI অ্যাপের স্ক্রিনশট" data-i-attr="alt:shotDarkAlt">
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="band" id="honest" aria-labelledby="honest-title">
+    <div class="wrap section">
+      <div class="head">
+        <p class="eyebrow strong" data-i="honestEyebrow">খোলাখুলি</p>
+        <h2 id="honest-title" data-i="honestTitle">এটি কী, আর কী নয়</h2>
+        <p class="muted" data-i="honestSub">নামে “AI” থাকলেও এখনকার অ্যাপটি একটি ছোট, সরল নমুনা।</p>
+      </div>
+      <div class="grid-2">
+        <div class="card card-page">
+          <h3 data-i="isTitle">যা আছে</h3>
+          <ul class="ticks">
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="is1">কুরআনের ৪৬টি আয়াত ও ২০টি হাদিস, প্রতিটির সূত্রসহ</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="is2">উত্তর তৈরি হয় আপনার যন্ত্রেই; অ্যাপ কোনো নেটওয়ার্ক কল করে না</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="is3">বিনামূল্যে; বিজ্ঞাপন নেই, ট্র্যাকিং নেই</span></li>
+            <li><svg class="ic ic-accent"><use href="#i-check"/></svg><span data-i="is4">পুরো কোড উন্মুক্ত, এমআইটি লাইসেন্সে</span></li>
+          </ul>
+        </div>
+        <div class="card card-page">
+          <h3 data-i="notTitle">যা নেই</h3>
+          <ul class="ticks ticks-no">
+            <li><svg class="ic"><use href="#i-cross"/></svg><span data-i="not1">কোনো এআই মডেল নেই; লেখা বাছাই হয় শব্দ মেলানোর নিয়মে</span></li>
+            <li><svg class="ic"><use href="#i-cross"/></svg><span data-i="not2">লেখাগুলো কোনো আলেম যাচাই করেননি; নির্ভরযোগ্য উৎসের সঙ্গে মিলিয়ে নিন</span></li>
+            <li><svg class="ic"><use href="#i-cross"/></svg><span data-i="not3">ফতোয়া বা মাসআলা দেয় না; এর জন্য আলেমের কাছে যান</span></li>
+            <li><svg class="ic"><use href="#i-cross"/></svg><span data-i="not4">আয়াত ও হাদিসের বাংলা অনুবাদ এখনো নেই; প্রশ্নও ইংরেজিতে লিখতে হয়</span></li>
+            <li><svg class="ic"><use href="#i-cross"/></svg><span data-i="not5">অর্থ বুঝে খোঁজে না; প্রশ্নের শব্দ লেখায় না থাকলে মিল পায় না</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="open" aria-labelledby="open-title">
+    <div class="banner">
+      <svg class="arch-lines banner-lines" viewBox="0 0 400 480" fill="none" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+        <path d="M20 480V200C20 104 110 42 200 20C290 42 380 104 380 200V480" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M44 480V206C44 122 122 66 200 46C278 66 356 122 356 206V480" stroke="currentColor" stroke-opacity=".5"/>
+      </svg>
+      <div class="banner-text">
+        <span class="banner-tile" aria-hidden="true"><svg class="ic"><use href="#i-code"/></svg></span>
+        <h2 id="open-title" data-i="openTitle">ওপেন সোর্স, সবার জন্য খোলা</h2>
+        <p data-i="openBody">Peace AI ফ্লাটারে লেখা, এমআইটি লাইসেন্সে উন্মুক্ত। কোড পড়ুন, নিজে চালিয়ে দেখুন, ভুল পেলে জানান।</p>
+      </div>
+      <div class="banner-actions">
+        <a class="btn btn-white btn-lg" href="https://github.com/tahmidbintaslim/Peace-AI" data-i="openGithub">গিটহাবে দেখুন</a>
+        <a class="btn btn-ghost btn-lg" href="https://github.com/tahmidbintaslim/Peace-AI/blob/main/CONTRIBUTING.md"><span data-i="openGuide">অবদানের নিয়ম</span><svg class="ic ic-sm"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+
+    <ul class="grid-3 contribute">
+      <li class="card">
+        <h3><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg><span data-i="c1Title">লেখার ভুল জানান</span></h3>
+        <p class="muted" data-i="c1Body">কোনো আয়াত, অনুবাদ বা সূত্রে ভুল দেখলে গিটহাবে একটি ইস্যু খুলুন।</p>
+        <a class="link" href="https://github.com/tahmidbintaslim/Peace-AI/issues" data-i="c1Link">ইস্যু খুলুন</a>
+      </li>
+      <li class="card">
+        <h3><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg><span data-i="c2Title">কোডে হাত লাগান</span></h3>
+        <p class="muted" data-i="c2Body">রিপোজিটরি ক্লোন করে চালান, তারপর পুল রিকোয়েস্ট পাঠান। ধাপগুলো README-তে আছে।</p>
+        <a class="link" href="https://github.com/tahmidbintaslim/Peace-AI#running-it" data-i="c2Link">চালানোর নিয়ম</a>
+      </li>
+      <li class="card">
+        <h3><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span data-i="c3Title">সামনের পরিকল্পনা</span></h3>
+        <p class="muted" data-i="c3Body">অনুমতিসহ পূর্ণাঙ্গ উৎস, অর্থ বুঝে খোঁজা, বাংলা অনুবাদ আর আলেমের যাচাই। এগুলোর কোনোটি এখনো তৈরি হয়নি।</p>
+        <a class="link" href="https://github.com/tahmidbintaslim/Peace-AI#direction" data-i="c3Link">পরিকল্পনা পড়ুন</a>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="#top" aria-label="Peace AI">
+        <span class="logo" aria-hidden="true"><svg class="ic"><use href="#i-book"/></svg></span>
+        <span class="brand-name" lang="en">Peace AI</span>
+      </a>
+      <p class="small muted" data-i="footTag">সূত্রসহ কুরআনের আয়াত ও হাদিস।</p>
+    </div>
+    <nav class="foot-nav" aria-label="ফুটার" data-i-attr="aria-label:footLabel">
+      <div>
+        <p class="small muted" data-i="footApp">অ্যাপ</p>
+        <a href="/app/" data-i="open">অ্যাপ খুলুন</a>
+        <a href="#how" data-i="navHow">যেভাবে কাজ করে</a>
+        <a href="#honest" data-i="navHonest">সীমা</a>
+      </div>
+      <div>
+        <p class="small muted" data-i="footProject">প্রকল্প</p>
+        <a href="https://github.com/tahmidbintaslim/Peace-AI" data-i="footSource">সোর্স কোড</a>
+        <a href="https://github.com/tahmidbintaslim/Peace-AI/issues" data-i="footReport">সমস্যা জানান</a>
+        <a href="https://github.com/tahmidbintaslim/Peace-AI/blob/main/LICENSE" data-i="footLicense">এমআইটি লাইসেন্স</a>
+      </div>
+      <div>
+        <p class="small muted" data-i="footSibling">একই নির্মাতার</p>
+        <a href="https://ramadanplanner.tahmid.space/" data-i="footRamadan">রমজান প্ল্যানার</a>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap foot-end">
+    <p class="small muted" data-i="footFonts">ফন্ট: Anek Bangla ও Amiri (SIL ওপেন ফন্ট লাইসেন্স)।</p>
+    <p class="small muted" data-i="footPromise">বিনামূল্যে · বিজ্ঞাপন নেই · ট্র্যাকিং নেই · © ২০২৬ Peace AI</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
