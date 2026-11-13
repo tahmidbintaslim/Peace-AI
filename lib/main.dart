@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
-import 'screens/chat_screen.dart';
+import 'screens/home_shell.dart';
 import 'services/theme_service.dart';
 import 'theme.dart';
 
@@ -26,7 +26,7 @@ class PeaceAIApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const SplashScreen(),
-          '/chat': (context) => const ChatScreen(),
+          '/chat': (context) => const HomeShell(),
         },
       ),
     );

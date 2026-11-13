@@ -19,6 +19,7 @@ A Flutter chat app that answers questions about Islam with Quran verses and hadi
 - [Features](#features)
 - [Project structure](#project-structure)
 - [Running it](#running-it)
+- [Landing page and deployment](#landing-page-and-deployment)
 - [Status and roadmap](#status-and-roadmap)
 - [Contributing](#contributing)
 - [Security](#security)
@@ -109,36 +110,45 @@ Planned work, in order:
 
 ## Features
 
+- Three tabs at the bottom: Ask (the chat), Saved (bookmarks) and Settings
 - Chat screen with topic chips (Prayer, Mercy, Knowledge, Patience, Charity,
   Family), shown until the first question is sent
 - Each reply lists its Quran or hadith references
 - Bookmarks, saved on the device with `shared_preferences`
 - Share button that opens a dialog to copy a reply and its references to the
   clipboard or view the formatted text (there is no system share sheet)
-- Settings screen with a theme picker, an About dialog, the app version and
-  a Content Statistics screen whose figures are counted from the dataset
-- Light and dark themes styled after a printed page: off-white paper, ink
-  text, references in a rubric red, and the Arabic set in the bundled Amiri
-  typeface with a verse-end mark carrying the ayah number. The theme follows
-  the system setting until you pick Light or Dark in Settings; the choice is
-  saved on the device with `shared_preferences`
+- Settings screen with a System/Light/Dark switch, an About dialog, the app
+  version and a Content Statistics screen whose figures are counted from the
+  dataset
+- Light and dark themes that follow the design system of
+  [Ramadan Planner](https://ramadanplanner.tahmid.space/), a sibling project
+  by the same author: a pale green-grey page, white rounded cards, deep teal
+  buttons with pale green secondary ones, and references in the green accent
+  (mint on dark green at night). The interface is set in Anek Bangla and the
+  Arabic in Amiri, both bundled, with a verse-end mark carrying the ayah
+  number. The theme follows the system setting until you pick Light or Dark
+  in Settings; the choice is saved on the device with `shared_preferences`
 
 ## Project structure
 
 ```
 lib/
   main.dart                  App entry point and routes
-  theme.dart                 Light and dark themes
+  theme.dart                 Colours, type scale and component themes
   models/                    Message, QuranVerse and Hadith models
-  screens/                   Splash, chat, bookmarks and settings screens
+  screens/                   Splash, tab shell, chat, bookmarks and settings
   services/
     ai_response_service.dart        Keyword rules that build each reply
     islamic_knowledge_service.dart  Built-in verses and hadiths, search
     bookmark_service.dart           Bookmarks in shared_preferences
     share_service.dart              Copy a reply to the clipboard
     theme_service.dart              Chosen theme in shared_preferences
-  widgets/                   Message bubble and chat input
-assets/fonts/                Amiri Regular 1.000 and its licence (SIL OFL 1.1)
+  widgets/                   Message bubble, chat input and shared pieces
+assets/fonts/                Amiri Regular 1.000 (Arabic) and the Anek Bangla
+                             variable font (interface), each with its
+                             licence (SIL OFL 1.1)
+site/                        Static landing page (HTML, CSS, a little JS)
+vercel.json                  Builds the landing page and the web app together
 test/widget_test.dart        Unit and widget tests
 ```
 
@@ -173,6 +183,30 @@ flutter build ios --release --no-codesign   # macOS only
 
 Release APKs are signed with the debug key (`android/app/build.gradle`); set
 up your own signing before publishing to a store.
+
+## Landing page and deployment
+
+`site/` is a static landing page with no build step: `index.html`,
+`styles.css`, `main.js` and `assets/` (web fonts with their licences, and
+screenshots taken from the Flutter web build). It is in Bangla with an
+English switch, and follows the Ramadan Planner landing page: top bar, hero
+with the app in a phone frame, three steps, a real verse and hadith with
+their references, what the app is and is not, and how to contribute. To look
+at it locally:
+
+```bash
+python3 -m http.server --directory site 8080
+```
+
+The page's "Open the app" button links to `/app/`, which exists only in a
+deployment (locally it is a 404). `vercel.json` sets that deployment up for
+[Vercel](https://vercel.com/): the install command shallow-clones Flutter
+3.24.5 into `.flutter/` and runs `flutter pub get`; the build command runs
+`flutter build web --release --base-href /app/ --no-web-resources-cdn` and
+assembles `public/` with `site/` at the root and the web build under `app/`.
+`--no-web-resources-cdn` bundles the CanvasKit renderer, so the deployed app
+loads nothing from a third-party host. Importing the repository into Vercel
+picks these settings up; no Vercel project has been created for it yet.
 
 ## Status and roadmap
 
