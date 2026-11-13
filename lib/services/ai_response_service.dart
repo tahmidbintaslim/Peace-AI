@@ -1,274 +1,218 @@
 import '../models/message.dart';
 import 'islamic_knowledge_service.dart';
 
+/// One keyword rule: any of [keywords] as a whole word selects the topic.
+class _Topic {
+  final List<String> keywords;
+  final String text;
+  final String? verseQuery;
+  final String? hadithQuery;
+
+  const _Topic(this.keywords, this.text, {this.verseQuery, this.hadithQuery});
+}
+
 class AIResponseService {
   final IslamicKnowledgeService _knowledgeService = IslamicKnowledgeService();
+  static int _replyCount = 0;
 
+  static const List<String> _greetings = [
+    'salam',
+    'salaam',
+    'assalamu',
+    'hello',
+    'hi',
+  ];
+
+  static const List<String> _helpWords = ['help', 'guidance', 'advice'];
+
+  static const String _topicList = '• Allah and His attributes\n'
+      '• Prayer and worship\n'
+      '• Mercy and compassion\n'
+      '• Knowledge and learning\n'
+      '• Patience\n'
+      '• Charity and kindness\n'
+      '• Good character and honesty\n'
+      '• Family and community\n'
+      '• Remembrance of Allah';
+
+  static const List<_Topic> _topics = [
+    _Topic(
+      ['allah', 'god', 'creator', 'lord'],
+      'Allah is the One True God, the Creator of all things.',
+      verseQuery: 'allah',
+    ),
+    _Topic(
+      ['prayer', 'salah', 'namaz', 'pray', 'worship'],
+      'Prayer (Salah) is one of the Five Pillars of Islam. Muslims pray five '
+      'times daily: Fajr (dawn), Dhuhr (noon), Asr (afternoon), Maghrib '
+      '(sunset), and Isha (night).',
+      hadithQuery: 'prayer',
+    ),
+    _Topic(
+      [
+        'mercy',
+        'merciful',
+        'compassion',
+        'kind',
+        'kindness',
+        'forgiveness',
+        'forgive',
+      ],
+      'Allah is the Most Merciful and Compassionate.',
+      verseQuery: 'merciful',
+      hadithQuery: 'mercy',
+    ),
+    _Topic(
+      ['knowledge', 'learn', 'learning', 'study', 'education'],
+      'Seeking knowledge is highly valued in Islam.',
+      hadithQuery: 'knowledge',
+    ),
+    _Topic(
+      [
+        'patience',
+        'patient',
+        'perseverance',
+        'sabr',
+        'endure',
+        'hardship',
+        'difficulty',
+      ],
+      'Patience is a core virtue in Islam.',
+      verseQuery: 'patience',
+      hadithQuery: 'patient',
+    ),
+    _Topic(
+      ['charity', 'give', 'giving', 'sadaqah', 'zakat', 'help others'],
+      'Charity and helping others are fundamental in Islam.',
+      hadithQuery: 'charity',
+    ),
+    _Topic(
+      ['character', 'behavior', 'conduct', 'manners', 'akhlaq', 'ethics'],
+      'Good character is essential in Islam.',
+      hadithQuery: 'character',
+    ),
+    _Topic(
+      [
+        'brother',
+        'sister',
+        'unity',
+        'brotherhood',
+        'sisterhood',
+        'community',
+        'ummah',
+      ],
+      'Unity and brotherhood are emphasized in Islam.',
+      verseQuery: 'brothers',
+      hadithQuery: 'brother',
+    ),
+    _Topic(
+      ['truth', 'honesty', 'honest', 'truthful', 'sincere'],
+      'Honesty and truthfulness are core Islamic values.',
+      hadithQuery: 'truth',
+    ),
+    _Topic(
+      ['parent', 'parents', 'mother', 'father', 'family'],
+      'Respecting and honoring parents is a major teaching in Islam.',
+      verseQuery: 'parent',
+      hadithQuery: 'parent',
+    ),
+    _Topic(
+      ['remember', 'remembrance', 'dhikr', 'zikr', 'glorify'],
+      'Remembering Allah brings peace to the heart.',
+      verseQuery: 'remembrance',
+      hadithQuery: 'remember',
+    ),
+  ];
+
+  /// Builds the reply to [userQuery]. The reply text is only the short
+  /// explanation; the verse and hadith are carried as references and shown
+  /// from the dataset, word for word.
   Future<Message> generateResponse(String userQuery) async {
-    // Simulate AI processing delay
-    await Future.delayed(const Duration(milliseconds: 500));
+    final words = IslamicKnowledgeService.wordsOf(userQuery);
 
-    final lowerQuery = userQuery.toLowerCase();
-    String responseText = '';
-    List<String> references = [];
-
-    // Analyze user query and provide appropriate response
-    if (_containsAny(
-        lowerQuery, ['peace', 'salam', 'salaam', 'greeting', 'hello', 'hi'])) {
-      responseText =
-          'Assalamu Alaikum! Peace be upon you. How can I help you learn about Islam today?';
-    } else if (_containsAny(lowerQuery, ['allah', 'god', 'creator', 'lord'])) {
-      final verse = _knowledgeService.searchQuran('allah').isNotEmpty
-          ? _knowledgeService.searchQuran('allah').first
-          : _knowledgeService.getRandomVerse();
-      if (verse != null) {
-        responseText =
-            'Allah is the One True God, the Creator of all things. Here\'s what the Quran says:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-      }
-    } else if (_containsAny(
-        lowerQuery, ['prayer', 'salah', 'namaz', 'pray', 'worship'])) {
-      responseText =
-          'Prayer (Salah) is one of the Five Pillars of Islam. It is the direct connection between a believer and Allah. '
-          'Muslims pray five times daily: Fajr (dawn), Dhuhr (noon), Asr (afternoon), Maghrib (sunset), and Isha (night).\n\n';
-      final hadith = _knowledgeService.searchHadith('prayer').isNotEmpty
-          ? _knowledgeService.searchHadith('prayer').first
-          : _knowledgeService.getRandomHadith();
-      if (hadith != null) {
-        responseText +=
-            'The Prophet Muhammad (peace be upon him) said:\n\n${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(lowerQuery, [
-      'mercy',
-      'merciful',
-      'compassion',
-      'kind',
-      'kindness',
-      'forgiveness',
-      'forgive'
-    ])) {
-      final verses = _knowledgeService.searchQuran('merciful');
-      if (verses.isNotEmpty) {
-        final verse = verses.first;
-        responseText =
-            'Allah is the Most Merciful and Compassionate. The Quran says:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-      }
-      final hadiths = _knowledgeService.searchHadith('mercy');
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText += '\n\nThe Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(
-        lowerQuery, ['knowledge', 'learn', 'learning', 'study', 'education'])) {
-      final hadiths = _knowledgeService.searchHadith('knowledge');
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText =
-            'Seeking knowledge is highly valued in Islam. The Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}\n\n'
-            'Islam encourages continuous learning and understanding.';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(lowerQuery, [
-      'patience',
-      'patient',
-      'perseverance',
-      'sabr',
-      'endure',
-      'hardship',
-      'difficulty'
-    ])) {
-      final verses = _knowledgeService.searchQuran('patience');
-      if (verses.isNotEmpty) {
-        final verse = verses.first;
-        responseText =
-            'Patience is a core virtue in Islam. The Quran teaches:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-      }
-      final hadiths = _knowledgeService.searchHadith('patient');
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText += '\n\nThe Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(lowerQuery,
-        ['charity', 'give', 'giving', 'sadaqah', 'zakat', 'help others'])) {
-      final hadiths = _knowledgeService.searchHadith('charity');
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText =
-            'Charity and helping others are fundamental in Islam. The Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}\n\n'
-            'Even simple acts of kindness count as charity.';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(lowerQuery,
-        ['character', 'behavior', 'conduct', 'manners', 'akhlaq', 'ethics'])) {
-      final hadiths = _knowledgeService.searchHadith('character');
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText =
-            'Good character is essential in Islam. The Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}\n\n'
-            'Islam emphasizes treating others with respect, honesty, and kindness.';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(lowerQuery, [
-      'brother',
-      'sister',
-      'unity',
-      'brotherhood',
-      'sisterhood',
-      'community',
-      'ummah'
-    ])) {
-      final hadiths = _knowledgeService.searchHadith('brother');
-      final verses = _knowledgeService.searchQuran('brothers');
-      if (verses.isNotEmpty) {
-        final verse = verses.first;
-        responseText =
-            'Unity and brotherhood are emphasized in Islam. The Quran says:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-      }
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText += '\n\nThe Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(
-        lowerQuery, ['truth', 'honesty', 'honest', 'truthful', 'sincere'])) {
-      final hadiths = _knowledgeService.searchHadith('truth');
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText =
-            'Honesty and truthfulness are core Islamic values. The Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(
-        lowerQuery, ['parent', 'parents', 'mother', 'father', 'family'])) {
-      final hadiths = _knowledgeService.searchHadith('parent');
-      final verses = _knowledgeService.searchQuran('parent');
-      if (verses.isNotEmpty) {
-        final verse = verses.first;
-        responseText =
-            'Respecting and honoring parents is a major teaching in Islam. The Quran says:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-      }
-      if (hadiths.isNotEmpty &&
-          hadiths.first.translation.toLowerCase().contains('parent')) {
-        final hadith = hadiths.first;
-        responseText += '\n\nThe Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(
-        lowerQuery, ['remember', 'remembrance', 'dhikr', 'zikr', 'glorify'])) {
-      final hadiths = _knowledgeService.searchHadith('remember');
-      final verses = _knowledgeService.searchQuran('remembrance');
-      if (verses.isNotEmpty) {
-        final verse = verses.first;
-        responseText =
-            'Remembering Allah brings peace to the heart. The Quran says:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-      }
-      if (hadiths.isNotEmpty) {
-        final hadith = hadiths.first;
-        responseText += '\n\nThe Prophet Muhammad (peace be upon him) said:\n\n'
-            '${hadith.translation}';
-        references.add(hadith.reference);
-      }
-    } else if (_containsAny(
-        lowerQuery, ['help', 'guidance', 'advice', 'what', 'how'])) {
-      final verse = _knowledgeService.getRandomVerse();
-
-      responseText =
-          'I am Peace AI, designed to help you learn about Islam through the Quran and Hadith. '
-          'You can ask me about:\n\n'
-          '• Allah and His attributes\n'
-          '• Prayer and worship\n'
-          '• Mercy and compassion\n'
-          '• Knowledge and learning\n'
-          '• Patience and gratitude\n'
-          '• Charity and kindness\n'
-          '• Good character and ethics\n'
-          '• Family and community\n\n'
-          'Here\'s a verse from the Quran:\n\n';
-
-      if (verse != null) {
-        responseText += '${verse.arabicText}\n\n${verse.translation}';
-        references.add(verse.reference);
-      }
-    } else {
-      // General search in both Quran and Hadith
-      final quranResults = _knowledgeService.searchQuran(userQuery);
-      final hadithResults = _knowledgeService.searchHadith(userQuery);
-
-      if (quranResults.isNotEmpty) {
-        final verse = quranResults.first;
-        responseText = 'I found this in the Quran:\n\n'
-            '${verse.arabicText}\n\n'
-            '${verse.translation}';
-        references.add(verse.reference);
-
-        // Add more results if available
-        if (quranResults.length > 1) {
-          responseText +=
-              '\n\n(I found ${quranResults.length} verses related to your query. Try asking more specifically for additional verses.)';
-        }
-      } else if (hadithResults.isNotEmpty) {
-        final hadith = hadithResults.first;
-        responseText = 'I found this Hadith:\n\n'
-            '${hadith.translation}\n\n'
-            'Narrated by: ${hadith.narrator}';
-        references.add(hadith.reference);
-
-        // Add more results if available
-        if (hadithResults.length > 1) {
-          responseText +=
-              '\n\n(I found ${hadithResults.length} hadiths related to your query.)';
-        }
-      } else {
-        responseText =
-            'I understand you\'re asking about "$userQuery". While I don\'t have specific information '
-            'about that in my current knowledge base, I encourage you to explore the Quran and authentic Hadith collections. '
-            '\n\nYou can ask about topics like:\n'
-            '• Prayer and worship\n'
-            '• Patience and gratitude\n'
-            '• Knowledge and learning\n'
-            '• Good character and manners\n'
-            '• Family and community\n';
-      }
+    if (_hasAny(words, _greetings)) {
+      return _reply(
+        'Assalamu Alaikum! Peace be upon you. Ask a question or name a '
+        'topic, and I will show a verse or hadith with its reference.',
+      );
     }
 
+    for (final topic in _topics) {
+      if (!_hasAny(words, topic.keywords)) continue;
+      final references = <String>[];
+      if (topic.verseQuery != null) {
+        final verses = _knowledgeService.searchQuran(topic.verseQuery!);
+        if (verses.isNotEmpty) references.add(verses.first.reference);
+      }
+      if (topic.hadithQuery != null) {
+        final hadiths = _knowledgeService.searchHadith(topic.hadithQuery!);
+        if (hadiths.isNotEmpty) references.add(hadiths.first.reference);
+      }
+      if (references.isNotEmpty) return _reply(topic.text, references);
+    }
+
+    if (_hasAny(words, _helpWords)) {
+      return _reply(
+        'Ask in your own words or name a topic. Each answer is a Quran '
+        'verse or a hadith from the built-in texts, shown with its '
+        'reference. Topics with a fixed answer:\n\n$_topicList',
+      );
+    }
+
+    // Free text: rank verses and hadiths by how many of the question's
+    // significant words they contain, and show the best of each kind.
+    final verses = _knowledgeService.rankQuran(userQuery);
+    final hadiths = _knowledgeService.rankHadith(userQuery);
+    final verseScore = verses.isEmpty
+        ? 0
+        : IslamicKnowledgeService.matchCount(
+            userQuery,
+            IslamicKnowledgeService.verseSearchText(verses.first),
+          );
+    final hadithScore = hadiths.isEmpty
+        ? 0
+        : IslamicKnowledgeService.matchCount(
+            userQuery,
+            IslamicKnowledgeService.hadithSearchText(hadiths.first),
+          );
+    final best = verseScore > hadithScore ? verseScore : hadithScore;
+    if (best > 0) {
+      final searched =
+          IslamicKnowledgeService.significantWords(userQuery).join(', ');
+      return _reply(
+        'Closest match in the built-in texts for the words: $searched.',
+        [
+          if (verseScore == best) verses.first.reference,
+          if (hadithScore == best) hadiths.first.reference,
+        ],
+      );
+    }
+
+    return _reply(
+      'Nothing in the built-in texts matches "$userQuery". The app holds '
+      'only ${_knowledgeService.totalVerses} verses and '
+      '${_knowledgeService.totalHadiths} hadiths. Topics with a fixed '
+      'answer:\n\n$_topicList',
+    );
+  }
+
+  Message _reply(String text, [List<String> references = const []]) {
+    final now = DateTime.now();
     return Message(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      text: responseText,
+      // The counter keeps ids unique when two replies share a timestamp.
+      id: '${now.microsecondsSinceEpoch}-${_replyCount++}',
+      text: text,
       isUser: false,
-      timestamp: DateTime.now(),
+      timestamp: now,
       references: references.isNotEmpty ? references : null,
     );
   }
 
-  bool _containsAny(String text, List<String> keywords) {
-    return keywords.any((keyword) => text.contains(keyword));
+  // True when any keyword occurs in [words] as whole words, so "hi" does
+  // not match inside "this".
+  bool _hasAny(List<String> words, List<String> keywords) {
+    return keywords.any(
+      (k) => IslamicKnowledgeService.wordsOf(k).every(words.contains),
+    );
   }
 }

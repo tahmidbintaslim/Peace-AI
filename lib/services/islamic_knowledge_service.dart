@@ -1,7 +1,7 @@
 import '../models/islamic_content.dart';
 
 class IslamicKnowledgeService {
-  // Sample Quran verses - In production, this would come from a database or API
+  // Built-in verses. They have not been reviewed by a scholar.
   final List<QuranVerse> _quranVerses = [
     // Al-Fatihah (The Opening)
     QuranVerse(
@@ -690,6 +690,150 @@ class IslamicKnowledgeService {
         .where(
             (verse) => verse.surahName.toLowerCase() == surahName.toLowerCase())
         .toList();
+  }
+
+  // Words that say nothing about the subject of a question.
+  static const Set<String> _stopWords = {
+    'a',
+    'about',
+    'am',
+    'an',
+    'and',
+    'any',
+    'are',
+    'as',
+    'at',
+    'be',
+    'by',
+    'can',
+    'could',
+    'did',
+    'do',
+    'doe',
+    'for',
+    'from',
+    'has',
+    'have',
+    'how',
+    'i',
+    'if',
+    'in',
+    'into',
+    'is',
+    'islam',
+    'it',
+    'me',
+    'my',
+    'of',
+    'on',
+    'or',
+    'our',
+    'please',
+    'quran',
+    'hadith',
+    'say',
+    'should',
+    'show',
+    'so',
+    'some',
+    'tell',
+    'than',
+    'that',
+    'the',
+    'their',
+    'them',
+    'there',
+    'these',
+    'thi',
+    'to',
+    'us',
+    'verse',
+    'was',
+    'we',
+    'what',
+    'when',
+    'where',
+    'which',
+    'who',
+    'why',
+    'will',
+    'with',
+    'would',
+    'you',
+    'your'
+  };
+
+  /// Lowercased whole words of [text].
+  // shortcut: a trailing "s" is dropped so "parents" matches "parent"; this
+  // is not real stemming ("patient" does not match "patience"). Replace it
+  // when search by meaning lands.
+  static List<String> wordsOf(String text) {
+    return RegExp('[a-z]+')
+        .allMatches(text.toLowerCase())
+        .map((m) => m[0]!)
+        .map((w) =>
+            w.length > 3 && w.endsWith('s') ? w.substring(0, w.length - 1) : w)
+        .toList();
+  }
+
+  /// The words of [query] worth searching for, without stop words.
+  static Set<String> significantWords(String query) {
+    return wordsOf(query)
+        .where((w) => w.length > 1 && !_stopWords.contains(w))
+        .toSet();
+  }
+
+  /// How many of the significant words of [query] occur in [text].
+  static int matchCount(String query, String text) {
+    return significantWords(query).intersection(wordsOf(text).toSet()).length;
+  }
+
+  // Items matching at least one word, most matching words first. Ties keep
+  // the dataset order.
+  List<T> _rank<T>(List<T> items, String query, String Function(T) text) {
+    final scores = {for (final i in items) i: matchCount(query, text(i))};
+    final found = items.where((i) => scores[i]! > 0).toList();
+    final order = {for (var i = 0; i < found.length; i++) found[i]: i};
+    found.sort((a, b) {
+      final byScore = scores[b]!.compareTo(scores[a]!);
+      return byScore != 0 ? byScore : order[a]!.compareTo(order[b]!);
+    });
+    return found;
+  }
+
+  /// Verses whose translation or surah name contains words of [query].
+  List<QuranVerse> rankQuran(String query) {
+    return _rank(_quranVerses, query, verseSearchText);
+  }
+
+  /// Hadiths whose translation or narrator contains words of [query].
+  List<Hadith> rankHadith(String query) {
+    return _rank(_hadiths, query, hadithSearchText);
+  }
+
+  static String verseSearchText(QuranVerse v) =>
+      '${v.translation} ${v.surahName}';
+
+  static String hadithSearchText(Hadith h) => '${h.translation} ${h.narrator}';
+
+  /// The verse or hadith a reference string points to, or null.
+  Object? findByReference(String reference) {
+    for (final verse in _quranVerses) {
+      if (verse.reference == reference) return verse;
+    }
+    for (final hadith in _hadiths) {
+      if (hadith.reference == reference) return hadith;
+    }
+    return null;
+  }
+
+  /// Hadith collection names with the number of hadiths from each.
+  Map<String, int> get hadithCollections {
+    final counts = <String, int>{};
+    for (final hadith in _hadiths) {
+      counts[hadith.collection] = (counts[hadith.collection] ?? 0) + 1;
+    }
+    return counts;
   }
 
   // Get statistics

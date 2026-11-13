@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 
 class ChatInput extends StatefulWidget {
   final Function(String) onSendMessage;
-  final bool enabled;
 
-  const ChatInput({
-    super.key,
-    required this.onSendMessage,
-    this.enabled = true,
-  });
+  const ChatInput({super.key, required this.onSendMessage});
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -31,7 +26,7 @@ class _ChatInputState extends State<ChatInput> {
   }
 
   void _handleSend() {
-    if (_controller.text.trim().isNotEmpty && widget.enabled) {
+    if (_controller.text.trim().isNotEmpty) {
       widget.onSendMessage(_controller.text);
       _controller.clear();
     }
@@ -45,70 +40,31 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  enabled: widget.enabled,
-                  decoration: InputDecoration(
-                    hintText: 'Ask about Islam...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                  ),
-                  maxLines: null,
-                  textCapitalization: TextCapitalization.sentences,
-                  onSubmitted: (_) => _handleSend(),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  hintText: 'Ask about a topic, or in your own words',
                 ),
+                minLines: 1,
+                maxLines: 5,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (_) => _handleSend(),
               ),
-              const SizedBox(width: 8),
-              Material(
-                color: _hasText && widget.enabled
-                    ? Theme.of(context).colorScheme.primary
-                    : colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(24),
-                child: InkWell(
-                  onTap: _hasText && widget.enabled ? _handleSend : null,
-                  borderRadius: BorderRadius.circular(24),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    child: Icon(
-                      Icons.send,
-                      color: _hasText && widget.enabled
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context)
-                              .colorScheme
-                              .onSurfaceVariant
-                              .withOpacity(0.5),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+            IconButton.filled(
+              onPressed: _hasText ? _handleSend : null,
+              icon: const Icon(Icons.arrow_upward),
+              tooltip: 'Send',
+            ),
+          ],
         ),
       ),
     );

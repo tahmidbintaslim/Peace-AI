@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -8,22 +9,13 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
+class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
-    _controller.forward();
-
-    Timer(const Duration(seconds: 3), () {
+    _timer = Timer(const Duration(milliseconds: 1200), () {
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/chat');
       }
@@ -32,50 +24,40 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
+        child: Padding(
+          padding: const EdgeInsets.all(32),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.auto_awesome,
-                size: 100,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              const SizedBox(height: 24),
               Text(
                 'Peace AI',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.displaySmall?.copyWith(
+                  fontFamily: arabicFont,
+                  color: colors.onSurface,
                 ),
               ),
-              const SizedBox(height: 8),
+              Container(
+                width: 56,
+                height: 2,
+                margin: const EdgeInsets.symmetric(vertical: 16),
+                color: colors.secondary,
+              ),
               Text(
-                'Islamic Knowledge Assistant',
-                style: TextStyle(
-                  fontSize: 16,
-                  color:
-                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
-                ),
-              ),
-              const SizedBox(height: 48),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  strokeWidth: 3,
+                'Quran verses and hadith, each with its reference',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: colors.onSurfaceVariant,
                 ),
               ),
             ],

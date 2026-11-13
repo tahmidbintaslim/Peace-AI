@@ -1,361 +1,167 @@
 import 'package:flutter/material.dart';
+import '../services/islamic_knowledge_service.dart';
+import '../services/theme_service.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+/// What the answers are, in plain words. Shown in the first chat message
+/// and in the About dialog.
+String sourceNotice(IslamicKnowledgeService knowledge) {
+  return 'Answers come from a small built-in set of '
+      '${knowledge.totalVerses} Quran verses and ${knowledge.totalHadiths} '
+      'hadiths, each shown with its reference. They are picked by keyword '
+      'rules, not by an AI model. The texts have not been reviewed by a '
+      'scholar, so check them against a trusted source. For a ruling, ask '
+      'a scholar.';
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  ThemeMode _themeMode = ThemeMode.system;
+void showAboutPeaceAI(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('About Peace AI'),
+      content: SingleChildScrollView(
+        child: Text(
+          '${sourceNotice(IslamicKnowledgeService())}\n\n'
+          'Free and open source (MIT licence). No ads, no tracking, and '
+          'nothing you type leaves this device.',
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
+        ),
+      ],
+    ),
+  );
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  static const Map<ThemeMode, String> _themeNames = {
+    ThemeMode.system: 'System default',
+    ThemeMode.light: 'Light',
+    ThemeMode.dark: 'Dark',
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        elevation: 2,
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          const SizedBox(height: 16),
-          _buildSectionHeader('Appearance'),
-          _buildThemeTile(),
+          const _SectionHeader('Theme'),
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: ThemeService.mode,
+            builder: (context, mode, _) => Column(
+              children: [
+                for (final entry in _themeNames.entries)
+                  RadioListTile<ThemeMode>(
+                    title: Text(entry.value),
+                    value: entry.key,
+                    groupValue: mode,
+                    onChanged: (value) {
+                      if (value != null) ThemeService.setMode(value);
+                    },
+                  ),
+              ],
+            ),
+          ),
           const Divider(),
-          _buildSectionHeader('About'),
-          _buildAboutTile(),
-          _buildVersionTile(),
-          const Divider(),
-          _buildSectionHeader('Content'),
-          _buildStatisticsTile(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildThemeTile() {
-    return ListTile(
-      leading: Icon(
-        _themeMode == ThemeMode.dark
-            ? Icons.dark_mode
-            : _themeMode == ThemeMode.light
-                ? Icons.light_mode
-                : Icons.brightness_auto,
-      ),
-      title: const Text('Theme'),
-      subtitle: Text(_getThemeModeText()),
-      onTap: () => _showThemeDialog(),
-    );
-  }
-
-  Widget _buildAboutTile() {
-    return ListTile(
-      leading: const Icon(Icons.info_outline),
-      title: const Text('About Peace AI'),
-      subtitle: const Text('Islamic knowledge assistant'),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
+          const _SectionHeader('About'),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
             title: const Text('About Peace AI'),
-            content: const SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Peace AI is an open-source Islamic knowledge assistant powered by the Quran and Hadith.',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'This application helps you explore Islamic teachings and provides responses based on authentic sources.',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Built with Flutter for cross-platform support.',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'License: MIT',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                ],
+            subtitle: const Text('Where the answers come from'),
+            onTap: () => showAboutPeaceAI(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.menu_book_outlined),
+            title: const Text('Content Statistics'),
+            subtitle: const Text('What the built-in dataset holds'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const StatisticsScreen(),
               ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildVersionTile() {
-    return const ListTile(
-      leading: Icon(Icons.label_outline),
-      title: Text('Version'),
-      subtitle: Text('1.0.0'),
-    );
-  }
-
-  Widget _buildStatisticsTile() {
-    return ListTile(
-      leading: const Icon(Icons.analytics_outlined),
-      title: const Text('Content Statistics'),
-      subtitle: const Text('View database information'),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const StatisticsScreen(),
+          const ListTile(
+            leading: Icon(Icons.label_outline),
+            title: Text('Version'),
+            subtitle: Text('1.0.0'),
           ),
-        );
-      },
-    );
-  }
-
-  String _getThemeModeText() {
-    switch (_themeMode) {
-      case ThemeMode.light:
-        return 'Light';
-      case ThemeMode.dark:
-        return 'Dark';
-      case ThemeMode.system:
-        return 'System default';
-    }
-  }
-
-  void _showThemeDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Choose Theme'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<ThemeMode>(
-              title: const Text('Light'),
-              value: ThemeMode.light,
-              groupValue: _themeMode,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _themeMode = value);
-                  Navigator.pop(context);
-                  _showThemeChangedMessage();
-                }
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: const Text('Dark'),
-              value: ThemeMode.dark,
-              groupValue: _themeMode,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _themeMode = value);
-                  Navigator.pop(context);
-                  _showThemeChangedMessage();
-                }
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: const Text('System default'),
-              value: ThemeMode.system,
-              groupValue: _themeMode,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _themeMode = value);
-                  Navigator.pop(context);
-                  _showThemeChangedMessage();
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showThemeChangedMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Theme preference saved (restart app to apply)'),
-        duration: Duration(seconds: 2),
+        ],
       ),
     );
   }
 }
 
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Text(
+        title,
+        style: theme.textTheme.labelLarge?.copyWith(
+          color: theme.colorScheme.secondary,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.4,
+        ),
+      ),
+    );
+  }
+}
+
+/// Counts taken from the dataset itself, never typed in by hand.
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final knowledge = IslamicKnowledgeService();
+    final collections = knowledge.hadithCollections;
+    final theme = Theme.of(context);
+
+    Widget count(int value, String label) {
+      return ListTile(
+        title: Text('$value', style: theme.textTheme.headlineMedium),
+        subtitle: Text(label),
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Content Statistics'),
-        elevation: 2,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildStatCard(
-              context,
-              'Quranic Verses',
-              '50+',
-              'Verses from 25+ Surahs',
-              Icons.menu_book,
-              Colors.green,
-            ),
-            const SizedBox(height: 16),
-            _buildStatCard(
-              context,
-              'Authentic Hadiths',
-              '20+',
-              'From major collections',
-              Icons.article,
-              Colors.blue,
-            ),
-            const SizedBox(height: 16),
-            _buildStatCard(
-              context,
-              'Topics Covered',
-              '10+',
-              'Prayer, Mercy, Knowledge, etc.',
-              Icons.topic,
-              Colors.orange,
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'Collections Included:',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            _buildCollectionChip(context, 'Sahih Bukhari'),
-            const SizedBox(height: 8),
-            _buildCollectionChip(context, 'Sahih Muslim'),
-            const SizedBox(height: 8),
-            _buildCollectionChip(context, 'Sunan Ibn Majah'),
-            const SizedBox(height: 8),
-            _buildCollectionChip(context, 'Sunan At-Tirmidhi'),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context,
-    String title,
-    String value,
-    String subtitle,
-    IconData icon,
-    Color color,
-  ) {
-    final surface = Theme.of(context).colorScheme.surfaceContainerHighest;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: surface.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 2,
-        ),
-      ),
-      child: Row(
+      appBar: AppBar(title: const Text('Content Statistics')),
+      body: ListView(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+          const _SectionHeader('Quran'),
+          count(knowledge.totalVerses, 'verses'),
+          count(knowledge.getSurahNames().length, 'surahs they come from'),
+          const Divider(),
+          const _SectionHeader('Hadith'),
+          count(knowledge.totalHadiths, 'hadiths'),
+          for (final entry in collections.entries)
+            ListTile(
+              title: Text(entry.key),
+              trailing: Text(
+                '${entry.value}',
+                style: theme.textTheme.titleMedium,
+              ),
             ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurfaceVariant
-                            .withOpacity(0.7),
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCollectionChip(BuildContext context, String name) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.check_circle,
-            color: Theme.of(context).colorScheme.primary,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              'The texts have not been reviewed by a scholar.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ],
