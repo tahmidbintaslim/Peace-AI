@@ -9,6 +9,10 @@ updates:
       pub-dependencies:
         patterns:
           - "*"
+    ignore:
+      # Lift when CI moves past Flutter 3.24 (Dart 3.5): flutter_lints 6 needs Dart 3.8.
+      - dependency-name: "flutter_lints"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
