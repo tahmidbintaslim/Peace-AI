@@ -64,7 +64,7 @@ class ShareService {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.copy),
+              leading: const Icon(Icons.copy_rounded),
               title: const Text('Copy to Clipboard'),
               onTap: () {
                 Navigator.pop(context);
@@ -72,7 +72,7 @@ class ShareService {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.text_snippet),
+              leading: const Icon(Icons.text_snippet_outlined),
               title: const Text('View Formatted Text'),
               onTap: () {
                 Navigator.pop(context);
@@ -100,7 +100,6 @@ class ShareService {
         content: SingleChildScrollView(
           child: SelectableText(
             formatMessage(message),
-            style: const TextStyle(fontSize: 14),
           ),
         ),
         actions: [

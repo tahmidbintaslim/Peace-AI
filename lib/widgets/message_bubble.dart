@@ -59,13 +59,17 @@ class _MessageBubbleState extends State<MessageBubble> {
       return Align(
         alignment: AlignmentDirectional.centerEnd,
         child: Container(
-          margin: const EdgeInsetsDirectional.only(start: 48, top: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          margin:
+              const EdgeInsetsDirectional.only(start: 48, top: 6, bottom: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: colors.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(4),
+            color: colors.primary,
+            borderRadius: BorderRadius.circular(16),
           ),
-          child: Text(message.text, style: theme.textTheme.bodyLarge),
+          child: Text(
+            message.text,
+            style: theme.textTheme.bodyLarge?.copyWith(color: colors.onPrimary),
+          ),
         ),
       );
     }
@@ -73,8 +77,13 @@ class _MessageBubbleState extends State<MessageBubble> {
     final small = theme.textTheme.bodySmall?.copyWith(
       color: colors.onSurfaceVariant,
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -83,7 +92,6 @@ class _MessageBubbleState extends State<MessageBubble> {
             message.text,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: colors.onSurfaceVariant,
-              height: 1.5,
             ),
           ),
           for (final reference in message.references ?? const <String>[])
@@ -93,27 +101,32 @@ class _MessageBubbleState extends State<MessageBubble> {
             ),
           // Only replies that quote a source are worth saving or sharing.
           if (message.references?.isNotEmpty ?? false)
-            Row(
-              children: [
-                Text(_formatTime(message.timestamp), style: small),
-                const Spacer(),
-                TextButton.icon(
-                  onPressed: _toggleBookmark,
-                  icon: Icon(
-                    _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                    size: 18,
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Text(_formatTime(message.timestamp), style: small),
+                  const Spacer(),
+                  TextButton.icon(
+                    onPressed: _toggleBookmark,
+                    icon: Icon(
+                      _isBookmarked
+                          ? Icons.bookmark_rounded
+                          : Icons.bookmark_border_rounded,
+                      size: 18,
+                    ),
+                    label: Text(_isBookmarked ? 'Saved' : 'Save'),
                   ),
-                  label: Text(_isBookmarked ? 'Saved' : 'Save'),
-                ),
-                TextButton.icon(
-                  onPressed: () => ShareService.showShareDialog(
-                    context,
-                    message,
+                  TextButton.icon(
+                    onPressed: () => ShareService.showShareDialog(
+                      context,
+                      message,
+                    ),
+                    icon: const Icon(Icons.ios_share_rounded, size: 18),
+                    label: const Text('Share'),
                   ),
-                  icon: const Icon(Icons.share, size: 18),
-                  label: const Text('Share'),
-                ),
-              ],
+                ],
+              ),
             ),
         ],
       ),
@@ -127,8 +140,8 @@ class _MessageBubbleState extends State<MessageBubble> {
   }
 }
 
-/// A verse or hadith set as a quotation, under its reference in the rubric
-/// colour. [source] is null when the reference is not in the dataset; the
+/// A verse or hadith on a pale green block, under its reference in the green
+/// accent. [source] is null when the reference is not in the dataset; the
 /// reference line is shown either way.
 class _SourceBlock extends StatelessWidget {
   final String reference;
@@ -150,12 +163,10 @@ class _SourceBlock extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final source = this.source;
-    final rubric = theme.textTheme.labelLarge?.copyWith(
+    final label = theme.textTheme.labelLarge?.copyWith(
       color: colors.secondary,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.4,
     );
-    final translation = theme.textTheme.bodyLarge?.copyWith(height: 1.55);
+    final translation = theme.textTheme.bodyLarge?.copyWith(height: 28 / 17);
     final kind = source is Hadith
         ? 'Hadith  ·  '
         : source is QuranVerse
@@ -166,16 +177,15 @@ class _SourceBlock extends StatelessWidget {
       margin: const EdgeInsets.only(top: 12),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
-        border: Border.all(color: colors.outlineVariant),
-        borderRadius: BorderRadius.circular(4),
+        color: colors.secondaryContainer,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             '$kind$reference',
-            style: rubric,
+            style: label,
           ),
           if (source is QuranVerse) ...[
             const SizedBox(height: 8),

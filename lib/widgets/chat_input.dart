@@ -40,9 +40,15 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surfaceContainer,
+        border: Border(top: BorderSide(color: colors.outlineVariant)),
+      ),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: SafeArea(
+        top: false,
         child: Row(
           children: [
             Expanded(
@@ -61,8 +67,9 @@ class _ChatInputState extends State<ChatInput> {
             const SizedBox(width: 8),
             IconButton.filled(
               onPressed: _hasText ? _handleSend : null,
-              icon: const Icon(Icons.arrow_upward),
+              icon: const Icon(Icons.arrow_upward_rounded),
               tooltip: 'Send',
+              style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
             ),
           ],
         ),

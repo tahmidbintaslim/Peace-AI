@@ -56,3 +56,7 @@ macos/Flutter/ephemeral/
 
 # Linux related
 linux/flutter/ephemeral/
+
+# Vercel build (see vercel.json): the Flutter SDK it clones and its output
+/.flutter/
+/public/

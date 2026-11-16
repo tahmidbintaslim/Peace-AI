@@ -26,3 +26,12 @@ flutter:
     - family: Amiri
       fonts:
         - asset: assets/fonts/Amiri-Regular.ttf
+    - family: Anek Bangla
+      fonts:
+        - asset: assets/fonts/AnekBangla-Variable.ttf
+    # The web build downloads Roboto from fonts.gstatic.com unless a family
+    # of that name is bundled. Pointing the name at the bundled UI font keeps
+    # the app free of network calls.
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/AnekBangla-Variable.ttf

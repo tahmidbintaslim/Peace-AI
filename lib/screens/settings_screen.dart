@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/islamic_knowledge_service.dart';
 import '../services/theme_service.dart';
+import '../widgets/common.dart';
 
 /// What the answers are, in plain words. Shown in the first chat message
 /// and in the About dialog.
@@ -26,7 +27,7 @@ void showAboutPeaceAI(BuildContext context) {
         ),
       ),
       actions: [
-        TextButton(
+        FilledButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('Close'),
         ),
@@ -39,7 +40,7 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   static const Map<ThemeMode, String> _themeNames = {
-    ThemeMode.system: 'System default',
+    ThemeMode.system: 'System',
     ThemeMode.light: 'Light',
     ThemeMode.dark: 'Dark',
   };
@@ -48,51 +49,100 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
+      body: _Page(
         children: [
           const _SectionHeader('Theme'),
-          ValueListenableBuilder<ThemeMode>(
-            valueListenable: ThemeService.mode,
-            builder: (context, mode, _) => Column(
-              children: [
-                for (final entry in _themeNames.entries)
-                  RadioListTile<ThemeMode>(
-                    title: Text(entry.value),
-                    value: entry.key,
-                    groupValue: mode,
-                    onChanged: (value) {
-                      if (value != null) ThemeService.setMode(value);
-                    },
-                  ),
-              ],
-            ),
-          ),
-          const Divider(),
-          const _SectionHeader('About'),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('About Peace AI'),
-            subtitle: const Text('Where the answers come from'),
-            onTap: () => showAboutPeaceAI(context),
-          ),
-          ListTile(
-            leading: const Icon(Icons.menu_book_outlined),
-            title: const Text('Content Statistics'),
-            subtitle: const Text('What the built-in dataset holds'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const StatisticsScreen(),
+          SurfaceCard(
+            padding: const EdgeInsets.all(12),
+            child: ValueListenableBuilder<ThemeMode>(
+              valueListenable: ThemeService.mode,
+              builder: (context, mode, _) => SegmentedChoice<ThemeMode>(
+                options: _themeNames,
+                value: mode,
+                onChanged: ThemeService.setMode,
               ),
             ),
           ),
-          const ListTile(
-            leading: Icon(Icons.label_outline),
-            title: Text('Version'),
-            subtitle: Text('1.0.0'),
+          const _SectionHeader('About'),
+          SurfaceCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _Row(
+                  icon: Icons.info_outline_rounded,
+                  title: 'About Peace AI',
+                  subtitle: 'Where the answers come from',
+                  onTap: () => showAboutPeaceAI(context),
+                ),
+                const Divider(indent: 76),
+                _Row(
+                  icon: Icons.auto_stories_outlined,
+                  title: 'Content Statistics',
+                  subtitle: 'What the built-in dataset holds',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const StatisticsScreen(),
+                    ),
+                  ),
+                ),
+                const Divider(indent: 76),
+                const _Row(
+                  icon: Icons.label_outline_rounded,
+                  title: 'Version',
+                  subtitle: '1.0.0',
+                ),
+              ],
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A scrolling column of cards, kept to a readable width on wide screens.
+class _Page extends StatelessWidget {
+  final List<Widget> children;
+
+  const _Page({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 720),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
+class _Row extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+
+  const _Row({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: IconTile(icon),
+      title: Text(title),
+      subtitle: Text(subtitle),
+      trailing: onTap == null ? null : const Icon(Icons.chevron_right_rounded),
+      onTap: onTap,
     );
   }
 }
@@ -109,10 +159,8 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
       child: Text(
         title,
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: theme.colorScheme.secondary,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.4,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
         ),
       ),
     );
@@ -126,42 +174,79 @@ class StatisticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final knowledge = IslamicKnowledgeService();
-    final collections = knowledge.hadithCollections;
+    final collections = knowledge.hadithCollections.entries.toList();
     final theme = Theme.of(context);
+    final muted = theme.textTheme.bodyMedium?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
 
-    Widget count(int value, String label) {
-      return ListTile(
-        title: Text('$value', style: theme.textTheme.headlineMedium),
-        subtitle: Text(label),
+    Widget count(IconData icon, int value, String label) {
+      return Expanded(
+        child: SurfaceCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconTile(icon),
+              const SizedBox(height: 12),
+              Text('$value', style: theme.textTheme.headlineMedium),
+              Text(label, style: muted),
+            ],
+          ),
+        ),
       );
     }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Content Statistics')),
-      body: ListView(
+      body: _Page(
         children: [
           const _SectionHeader('Quran'),
-          count(knowledge.totalVerses, 'verses'),
-          count(knowledge.getSurahNames().length, 'surahs they come from'),
-          const Divider(),
-          const _SectionHeader('Hadith'),
-          count(knowledge.totalHadiths, 'hadiths'),
-          for (final entry in collections.entries)
-            ListTile(
-              title: Text(entry.key),
-              trailing: Text(
-                '${entry.value}',
-                style: theme.textTheme.titleMedium,
-              ),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                count(Icons.auto_stories_outlined, knowledge.totalVerses,
+                    'verses'),
+                const SizedBox(width: 8),
+                count(
+                  Icons.format_list_numbered_rounded,
+                  knowledge.getSurahNames().length,
+                  'surahs they come from',
+                ),
+              ],
             ),
-          const Divider(),
+          ),
+          const _SectionHeader('Hadith'),
+          Row(
+            children: [
+              count(Icons.format_quote_rounded, knowledge.totalHadiths,
+                  'hadiths'),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SurfaceCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < collections.length; i++) ...[
+                  if (i > 0) const Divider(indent: 16),
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    title: Text(collections[i].key),
+                    trailing: Text(
+                      '${collections[i].value}',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
               'The texts have not been reviewed by a scholar.',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              style: muted,
             ),
           ),
         ],

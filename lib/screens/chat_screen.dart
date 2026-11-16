@@ -4,8 +4,8 @@ import '../services/ai_response_service.dart';
 import '../services/islamic_knowledge_service.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input.dart';
+import '../widgets/common.dart';
 import 'settings_screen.dart';
-import 'bookmarks_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -74,31 +74,24 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void _open(Widget screen) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Peace AI'),
+        title: const Row(
+          children: [
+            BrandMark(),
+            SizedBox(width: 12),
+            Text('Peace AI'),
+          ],
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.bookmark_border),
-            onPressed: () => _open(const BookmarksScreen()),
-            tooltip: 'Bookmarks',
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => _open(const SettingsScreen()),
-            tooltip: 'Settings',
-          ),
-          IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const Icon(Icons.info_outline_rounded),
             onPressed: () => showAboutPeaceAI(context),
             tooltip: 'About',
           ),
+          const SizedBox(width: 4),
         ],
       ),
       // Keeps a readable line length on wide screens.
@@ -108,26 +101,31 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+                // Short chats sit at the top; long ones scroll from the end.
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    reverse: true,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    itemCount: _messages.length,
+                    itemBuilder: (context, index) {
+                      final message = _messages[index];
+                      return MessageBubble(
+                        key: ValueKey(message.id),
+                        message: message,
+                      );
+                    },
                   ),
-                  itemCount: _messages.length,
-                  itemBuilder: (context, index) {
-                    final message = _messages[index];
-                    return MessageBubble(
-                      key: ValueKey(message.id),
-                      message: message,
-                    );
-                  },
                 ),
               ),
               if (_messages.length <= 1)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: Wrap(
@@ -143,7 +141,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ),
-              const Divider(),
               ChatInput(onSendMessage: _handleSendMessage),
             ],
           ),

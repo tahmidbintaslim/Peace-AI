@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../theme.dart';
+import '../widgets/common.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -39,20 +39,14 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const BrandMark(size: 72),
+              const SizedBox(height: 24),
               Text(
                 'Peace AI',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.displaySmall?.copyWith(
-                  fontFamily: arabicFont,
-                  color: colors.onSurface,
-                ),
+                style: theme.textTheme.displaySmall,
               ),
-              Container(
-                width: 56,
-                height: 2,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                color: colors.secondary,
-              ),
+              const SizedBox(height: 8),
               Text(
                 'Quran verses and hadith, each with its reference',
                 textAlign: TextAlign.center,
