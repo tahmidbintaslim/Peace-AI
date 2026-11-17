@@ -54,7 +54,7 @@ this order:
    that topic's fixed line and its verse or hadith.
 3. "help", "guidance" or "advice" gets a help message listing the topics.
 4. Anything else is searched by meaning: `api/search.mjs` (a Vercel function)
-   ranks the built-in texts with `text-embedding-3-small` through Vercel AI
+   ranks the built-in texts with an embedding model (Gemini, else Qwen, else OpenAI) through Vercel AI
    Gateway, which also understands Bangla questions. It returns references
    only; the app shows the closest verse and hadith from its own dataset,
    word for word, labelled as a search result and not a ruling. The model
