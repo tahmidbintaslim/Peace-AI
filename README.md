@@ -96,7 +96,7 @@ against a trusted source before relying on them.
 Peace AI is becoming an open-source search tool for the Quran and hadith in
 Bangla and English: you ask in your own words and get the actual verses and
 hadith, each with its reference and, for hadith, its grading. Search by meaning
-works over the 66 built-in texts; the complete corpus, gradings and Bangla
+works over the 65 built-in texts; the complete corpus, gradings and Bangla
 translations are not built yet.
 
 Rules the project keeps:
