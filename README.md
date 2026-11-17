@@ -60,7 +60,7 @@ this order:
    word for word, labelled as a search result and not a ruling. The model
    writes nothing.
 5. If that search is unreachable or finds nothing close (cosine score below
-   0.3), the question is searched by its significant words (common words such as
+   0.55), the question is searched by its significant words (common words such as
    "what", "the" or "about" are ignored) in the verse translations and surah
    names and in the hadith translations and narrator names. The texts are
    ranked by how many of those words they contain, and the best verse and

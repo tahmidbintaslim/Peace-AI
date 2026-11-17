@@ -12,9 +12,12 @@ final Uri _endpoint = kIsWeb
     ? Uri.base.resolve('/api/search')
     : Uri.parse('https://peace-ai-omega.vercel.app/api/search');
 
-/// Below this cosine score a match is treated as unrelated (tuned on
-/// text-embedding-3-small, where unrelated short texts score about 0.1-0.2).
-const double minMeaningScore = 0.3;
+/// Below this cosine score a match is treated as unrelated. Tuned on
+/// gemini-embedding-001 against the built-in texts: related questions score
+/// 0.55-0.67, unrelated ones ("how to cook rice") about 0.50-0.52.
+// shortcut: one cut-off for every model; recheck it if api/search.mjs falls
+// back to another model.
+const double minMeaningScore = 0.55;
 
 /// References scoring at least [minMeaningScore], or an empty list when the
 /// search is unreachable, so the caller falls back to word matching.
