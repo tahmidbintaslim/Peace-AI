@@ -49,7 +49,7 @@ void main() {
         text: 'Test message',
         isUser: false,
         timestamp: DateTime.now(),
-        references: ['Al-Fatihah 1:1', 'Sahih Bukhari 2:47'],
+        references: ['Al-Fatihah 1:1', 'Sahih Bukhari 10'],
       );
 
       expect(message.references, isNotNull);
@@ -85,6 +85,18 @@ void main() {
       );
 
       expect(hadith.reference, 'Sahih Bukhari 2:47');
+    });
+
+    test('Hadith without a book number uses sunnah.com numbering', () {
+      final hadith = Hadith(
+        collection: 'Sahih Muslim',
+        bookNumber: '',
+        hadithNumber: '2553a',
+        arabicText: '',
+        translation: 'Translation',
+        narrator: 'An-Nawwas',
+      );
+      expect(hadith.reference, 'Sahih Muslim 2553a');
     });
   });
 
@@ -225,11 +237,10 @@ void main() {
         () async {
       final meaning = AIResponseService(
         meaningSearch: (_) async =>
-            ['Made Up 9:9', 'Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540'],
+            ['Made Up 9:9', 'Al-Fatihah 1:1', 'Sahih Bukhari 6485'],
       );
       final response = await meaning.generateResponse('আমি খুব দুঃখে আছি');
-      expect(
-          response.references, ['Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540']);
+      expect(response.references, ['Al-Fatihah 1:1', 'Sahih Bukhari 6485']);
       expect(response.text, contains('not a ruling'));
     });
 
@@ -389,7 +400,7 @@ void main() {
 
     test('Notice says where answers come from', () {
       final notice = sourceNotice(IslamicKnowledgeService());
-      expect(notice, contains('46 Quran verses and 20 hadiths'));
+      expect(notice, contains('46 Quran verses and 19 hadiths'));
       expect(notice, contains('not been reviewed by a scholar'));
       expect(notice, contains('For a ruling, ask a scholar'));
     });

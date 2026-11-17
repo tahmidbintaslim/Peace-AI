@@ -33,5 +33,9 @@ class Hadith {
     required this.narrator,
   });
 
-  String get reference => '$collection $bookNumber:$hadithNumber';
+  /// sunnah.com numbering ("Sahih Muslim 2553a") when [bookNumber] is empty;
+  /// the older book:hadith form otherwise.
+  String get reference => bookNumber.isEmpty
+      ? '$collection $hadithNumber'
+      : '$collection $bookNumber:$hadithNumber';
 }

@@ -85,7 +85,8 @@ ruling you should ask a scholar.
 The dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
 
 - 46 Quran verses from 29 surahs
-- 20 hadiths (Sahih Bukhari, Sahih Muslim, Sunan At-Tirmidhi, Sunan Ibn Majah)
+- 19 hadiths (Sahih Bukhari, Sahih Muslim, Sunan At-Tirmidhi, Al-Adab Al-Mufrad),
+  numbered as on sunnah.com (for example "Sahih Muslim 2553a")
 
 The texts and translations have not been reviewed by a scholar. Check them
 against a trusted source before relying on them.
@@ -235,7 +236,7 @@ Known limitations, all visible in the code today:
   by word with no stemming.
 - Bookmarks saved by earlier versions show their verse twice, once in the
   old reply text and once as a quoted block.
-- The dataset is small (46 verses, 20 hadiths) and has not been reviewed by
+- The dataset is small (46 verses, 19 hadiths) and has not been reviewed by
   a scholar.
 - Sharing copies text to the clipboard; there is no system share sheet.
 - Release APKs are signed with the debug key.
