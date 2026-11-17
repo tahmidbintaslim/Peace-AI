@@ -221,6 +221,25 @@ void main() {
       service = AIResponseService();
     });
 
+    test('Free text uses search by meaning, keeping only known references',
+        () async {
+      final meaning = AIResponseService(
+        meaningSearch: (_) async =>
+            ['Made Up 9:9', 'Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540'],
+      );
+      final response = await meaning.generateResponse('আমি খুব দুঃখে আছি');
+      expect(response.references,
+          ['Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540']);
+      expect(response.text, contains('not a ruling'));
+    });
+
+    test('Falls back to word matching when search by meaning finds nothing',
+        () async {
+      final meaning = AIResponseService(meaningSearch: (_) async => const []);
+      final response = await meaning.generateResponse('forgiveness of sins');
+      expect(response.text, isNot(contains('not a ruling')));
+    });
+
     test('Generates response for greeting', () async {
       final response = await service.generateResponse('hello');
       expect(response, isNotNull);
