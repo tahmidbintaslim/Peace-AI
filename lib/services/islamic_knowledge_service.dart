@@ -425,8 +425,8 @@ class IslamicKnowledgeService {
   final List<Hadith> _hadiths = [
     // Faith and Intentions
     Hadith(
-      collection: 'Sahih Muslim',
-      bookNumber: '1',
+      collection: 'Sahih Bukhari',
+      bookNumber: '',
       hadithNumber: '1',
       arabicText: 'إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ',
       translation:
@@ -437,8 +437,8 @@ class IslamicKnowledgeService {
     // Islamic Brotherhood
     Hadith(
       collection: 'Sahih Bukhari',
-      bookNumber: '2',
-      hadithNumber: '47',
+      bookNumber: '',
+      hadithNumber: '10',
       arabicText:
           'الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ',
       translation:
@@ -447,8 +447,8 @@ class IslamicKnowledgeService {
     ),
     Hadith(
       collection: 'Sahih Bukhari',
-      bookNumber: '13',
-      hadithNumber: '6011',
+      bookNumber: '',
+      hadithNumber: '13',
       arabicText:
           'لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ',
       translation:
@@ -458,18 +458,18 @@ class IslamicKnowledgeService {
 
     // Mercy and Compassion
     Hadith(
-      collection: 'Sahih Bukhari',
-      bookNumber: '78',
-      hadithNumber: '651',
+      collection: 'Al-Adab Al-Mufrad',
+      bookNumber: '',
+      hadithNumber: '380',
       arabicText: 'ارْحَمُوا تُرْحَمُوا',
       translation:
           'Show mercy to others and you will receive mercy. Forgive others and Allah will forgive you.',
       narrator: 'Abdullah bin Amr',
     ),
     Hadith(
-      collection: 'Sahih Muslim',
-      bookNumber: '32',
-      hadithNumber: '6373',
+      collection: 'Sunan At-Tirmidhi',
+      bookNumber: '',
+      hadithNumber: '1924',
       arabicText: 'الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ',
       translation:
           'The merciful will be shown mercy by the Most Merciful. Be merciful to those on earth and He who is in the heavens will have mercy upon you.',
@@ -478,17 +478,9 @@ class IslamicKnowledgeService {
 
     // Knowledge and Learning
     Hadith(
-      collection: 'Sunan Ibn Majah',
-      bookNumber: '1',
-      hadithNumber: '224',
-      arabicText: 'طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ',
-      translation: 'Seeking knowledge is an obligation upon every Muslim.',
-      narrator: 'Anas bin Malik',
-    ),
-    Hadith(
       collection: 'Sahih Muslim',
-      bookNumber: '35',
-      hadithNumber: '6518',
+      bookNumber: '',
+      hadithNumber: '2699a',
       arabicText:
           'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ',
       translation:
@@ -499,8 +491,8 @@ class IslamicKnowledgeService {
     // Good Character
     Hadith(
       collection: 'Sunan At-Tirmidhi',
-      bookNumber: '27',
-      hadithNumber: '2002',
+      bookNumber: '',
+      hadithNumber: '2018',
       arabicText:
           'إِنَّ مِنْ أَحَبِّكُمْ إِلَيَّ وَأَقْرَبِكُمْ مِنِّي مَجْلِسًا يَوْمَ الْقِيَامَةِ أَحَاسِنَكُمْ أَخْلَاقًا',
       translation:
@@ -509,8 +501,8 @@ class IslamicKnowledgeService {
     ),
     Hadith(
       collection: 'Sahih Muslim',
-      bookNumber: '32',
-      hadithNumber: '6354',
+      bookNumber: '',
+      hadithNumber: '2553a',
       arabicText: 'الْبِرُّ حُسْنُ الْخُلُقِ',
       translation: 'Righteousness is good character.',
       narrator: 'An-Nawwas bin Sam\'an',
@@ -519,16 +511,16 @@ class IslamicKnowledgeService {
     // Prayer
     Hadith(
       collection: 'Sahih Muslim',
-      bookNumber: '4',
-      hadithNumber: '668',
+      bookNumber: '',
+      hadithNumber: '223',
       arabicText: 'الصَّلَاةُ نُورٌ',
       translation: 'Prayer is light.',
       narrator: 'Abu Malik Al-Ash\'ari',
     ),
     Hadith(
       collection: 'Sahih Bukhari',
-      bookNumber: '8',
-      hadithNumber: '505',
+      bookNumber: '',
+      hadithNumber: '528',
       arabicText:
           'أَرْأَيْتُمْ لَوْ أَنَّ نَهْرًا بِبَابِ أَحَدِكُمْ يَغْتَسِلُ فِيهِ كُلَّ يَوْمٍ خَمْسًا',
       translation:
@@ -539,8 +531,8 @@ class IslamicKnowledgeService {
     // Patience and Gratitude
     Hadith(
       collection: 'Sahih Muslim',
-      bookNumber: '42',
-      hadithNumber: '7138',
+      bookNumber: '',
+      hadithNumber: '2999',
       arabicText: 'عَجَبًا لِأَمْرِ الْمُؤْمِنِ إِنَّ أَمْرَهُ كُلَّهُ خَيْرٌ',
       translation:
           'How wonderful is the affair of the believer, for all his affairs are good. If something good happens to him, he is grateful, and if something bad happens, he is patient.',
@@ -550,16 +542,16 @@ class IslamicKnowledgeService {
     // Charity and Kindness
     Hadith(
       collection: 'Sahih Bukhari',
-      bookNumber: '24',
-      hadithNumber: '1433',
+      bookNumber: '',
+      hadithNumber: '6021',
       arabicText: 'كُلُّ مَعْرُوفٍ صَدَقَةٌ',
       translation: 'Every good deed is charity.',
       narrator: 'Jabir bin Abdullah',
     ),
     Hadith(
-      collection: 'Sahih Muslim',
-      bookNumber: '12',
-      hadithNumber: '2586',
+      collection: 'Sunan At-Tirmidhi',
+      bookNumber: '',
+      hadithNumber: '1956',
       arabicText: 'تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ صَدَقَةٌ',
       translation: 'Your smile in the face of your brother is charity.',
       narrator: 'Abu Dharr',
@@ -568,8 +560,8 @@ class IslamicKnowledgeService {
     // Justice and Honesty
     Hadith(
       collection: 'Sahih Muslim',
-      bookNumber: '33',
-      hadithNumber: '6541',
+      bookNumber: '',
+      hadithNumber: '2607a',
       arabicText:
           'عَلَيْكُمْ بِالصِّدْقِ فَإِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ',
       translation:
@@ -579,9 +571,9 @@ class IslamicKnowledgeService {
 
     // Family and Parents
     Hadith(
-      collection: 'Sahih Bukhari',
-      bookNumber: '78',
-      hadithNumber: '5971',
+      collection: 'Sunan At-Tirmidhi',
+      bookNumber: '',
+      hadithNumber: '1899',
       arabicText: 'رِضَا الرَّبِّ فِي رِضَا الْوَالِدِ',
       translation:
           'The pleasure of the Lord is in the pleasure of the parent, and the displeasure of the Lord is in the displeasure of the parent.',
@@ -590,9 +582,9 @@ class IslamicKnowledgeService {
 
     // Unity and Cooperation
     Hadith(
-      collection: 'Sahih Muslim',
-      bookNumber: '32',
-      hadithNumber: '6586',
+      collection: 'Sahih Bukhari',
+      bookNumber: '',
+      hadithNumber: '6026',
       arabicText:
           'الْمُؤْمِنُ لِلْمُؤْمِنِ كَالْبُنْيَانِ يَشُدُّ بَعْضُهُ بَعْضًا',
       translation:
@@ -603,8 +595,8 @@ class IslamicKnowledgeService {
     // Remembrance of Allah
     Hadith(
       collection: 'Sahih Bukhari',
-      bookNumber: '75',
-      hadithNumber: '6407',
+      bookNumber: '',
+      hadithNumber: '6406',
       arabicText:
           'كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ',
       translation:
@@ -615,8 +607,8 @@ class IslamicKnowledgeService {
     // Avoiding Sin
     Hadith(
       collection: 'Sahih Muslim',
-      bookNumber: '33',
-      hadithNumber: '6543',
+      bookNumber: '',
+      hadithNumber: '2563a',
       arabicText: 'إِيَّاكُمْ وَالظَّنَّ فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ',
       translation:
           'Beware of suspicion, for suspicion is the worst of false tales.',
@@ -625,9 +617,9 @@ class IslamicKnowledgeService {
 
     // Hope and Fear
     Hadith(
-      collection: 'Sunan At-Tirmidhi',
-      bookNumber: '49',
-      hadithNumber: '3540',
+      collection: 'Sahih Bukhari',
+      bookNumber: '',
+      hadithNumber: '6485',
       arabicText:
           'لَوْ تَعْلَمُونَ مَا أَعْلَمُ لَضَحِكْتُمْ قَلِيلًا وَلَبَكَيْتُمْ كَثِيرًا',
       translation:

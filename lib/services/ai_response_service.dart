@@ -1,5 +1,7 @@
 import '../models/message.dart';
+import '../models/islamic_content.dart';
 import 'islamic_knowledge_service.dart';
+import 'meaning_search.dart';
 
 /// One keyword rule: any of [keywords] as a whole word selects the topic.
 class _Topic {
@@ -13,6 +15,11 @@ class _Topic {
 
 class AIResponseService {
   final IslamicKnowledgeService _knowledgeService = IslamicKnowledgeService();
+
+  /// Search by meaning for free-text questions; null uses word matching only.
+  final MeaningSearch? meaningSearch;
+
+  AIResponseService({this.meaningSearch});
   static int _replyCount = 0;
 
   static const List<String> _greetings = [
@@ -159,7 +166,28 @@ class AIResponseService {
       );
     }
 
-    // Free text: rank verses and hadiths by how many of the question's
+    // Free text: first the closest texts by meaning (this also reads Bangla
+    // questions), at most one verse and one hadith, word for word as stored.
+    if (meaningSearch != null) {
+      final found = (await meaningSearch!(userQuery))
+          .map(_knowledgeService.findByReference)
+          .whereType<Object>()
+          .toList();
+      final verse = found.whereType<QuranVerse>().firstOrNull;
+      final hadith = found.whereType<Hadith>().firstOrNull;
+      if (verse != null || hadith != null) {
+        return _reply(
+          'Closest in meaning among the built-in texts. This is a search '
+          'result, not a ruling; ask a scholar about your situation.',
+          [
+            if (verse != null) verse.reference,
+            if (hadith != null) hadith.reference,
+          ],
+        );
+      }
+    }
+
+    // Otherwise rank verses and hadiths by how many of the question's
     // significant words they contain, and show the best of each kind.
     final verses = _knowledgeService.rankQuran(userQuery);
     final hadiths = _knowledgeService.rankHadith(userQuery);

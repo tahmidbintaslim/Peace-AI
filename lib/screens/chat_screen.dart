@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/message.dart';
 import '../services/ai_response_service.dart';
+import '../services/meaning_search.dart';
 import '../services/islamic_knowledge_service.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input.dart';
@@ -25,7 +26,8 @@ class _ChatScreenState extends State<ChatScreen> {
   ];
 
   final List<Message> _messages = [];
-  final AIResponseService _aiService = AIResponseService();
+  final AIResponseService _aiService =
+      AIResponseService(meaningSearch: searchByMeaning);
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -52,13 +54,12 @@ class _ChatScreenState extends State<ChatScreen> {
       isUser: true,
       timestamp: DateTime.now(),
     );
+    // Show the question at once; a search by meaning can take a moment.
+    setState(() => _messages.insert(0, userMessage));
     final reply = await _aiService.generateResponse(text);
     if (!mounted) return;
 
-    setState(() {
-      _messages.insert(0, userMessage);
-      _messages.insert(0, reply);
-    });
+    setState(() => _messages.insert(0, reply));
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         0,
