@@ -228,8 +228,8 @@ void main() {
             ['Made Up 9:9', 'Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540'],
       );
       final response = await meaning.generateResponse('আমি খুব দুঃখে আছি');
-      expect(response.references,
-          ['Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540']);
+      expect(
+          response.references, ['Al-Fatihah 1:1', 'Sunan At-Tirmidhi 49:3540']);
       expect(response.text, contains('not a ruling'));
     });
 

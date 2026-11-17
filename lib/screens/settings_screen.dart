@@ -8,8 +8,9 @@ import '../widgets/common.dart';
 String sourceNotice(IslamicKnowledgeService knowledge) {
   return 'Answers come from a small built-in set of '
       '${knowledge.totalVerses} Quran verses and ${knowledge.totalHadiths} '
-      'hadiths, each shown with its reference. They are picked by keyword '
-      'rules, not by an AI model. The texts have not been reviewed by a '
+      'hadiths, each shown with its reference. An AI search model '
+      'picks the closest texts but writes nothing; each text is shown '
+      'exactly as stored. The texts have not been reviewed by a '
       'scholar, so check them against a trusted source. For a ruling, ask '
       'a scholar.';
 }

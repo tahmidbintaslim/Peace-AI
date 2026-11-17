@@ -12,16 +12,22 @@ void main() {
     final service = IslamicKnowledgeService();
     final items = [
       for (final v in service.getAllVerses())
-        {'reference': v.reference, 'text': '${v.translation} (Quran, ${v.surahName})'},
+        {
+          'reference': v.reference,
+          'text': '${v.translation} (Quran, ${v.surahName})'
+        },
       for (final h in service.getAllHadiths())
         {
           'reference': h.reference,
-          'text': '${h.translation} Narrated by ${h.narrator}. ${h.collection}.',
+          'text':
+              '${h.translation} Narrated by ${h.narrator}. ${h.collection}.',
         },
     ];
     final expected = '${const JsonEncoder.withIndent('  ').convert(items)}\n';
     final file = File('api/knowledge.json');
-    if (Platform.environment['UPDATE_KNOWLEDGE'] == '1') file.writeAsStringSync(expected);
+    if (Platform.environment['UPDATE_KNOWLEDGE'] == '1') {
+      file.writeAsStringSync(expected);
+    }
     expect(file.readAsStringSync(), expected);
   });
 }

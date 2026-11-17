@@ -46,15 +46,21 @@ translation) and at most one hadith (English translation and narrator), each
 set as a quoted block under its reference. Some replies, such as the greeting,
 the help message or the no-match message, have no verse or hadith.
 
-Despite the name, there is no AI model and no network call. Replies come from
-keyword rules in `lib/services/ai_response_service.dart`, checked in this
-order:
+Replies are built in `lib/services/ai_response_service.dart`, checked in
+this order:
 
 1. A greeting word ("salam", "hello", "hi") gets a greeting.
 2. A word tied to a topic such as prayer, mercy, patience or charity gets
    that topic's fixed line and its verse or hadith.
 3. "help", "guidance" or "advice" gets a help message listing the topics.
-4. Anything else is searched by its significant words (common words such as
+4. Anything else is searched by meaning: `api/search.mjs` (a Vercel function)
+   ranks the built-in texts with `text-embedding-3-small` through Vercel AI
+   Gateway, which also understands Bangla questions. It returns references
+   only; the app shows the closest verse and hadith from its own dataset,
+   word for word, labelled as a search result and not a ruling. The model
+   writes nothing.
+5. If that search is unreachable or finds nothing close (cosine score below
+   0.3), the question is searched by its significant words (common words such as
    "what", "the" or "about" are ignored) in the verse translations and surah
    names and in the hadith translations and narrator names. The texts are
    ranked by how many of those words they contain, and the best verse and
@@ -62,13 +68,18 @@ order:
 
 Keywords and search words match whole words only, so "hi" inside "this" no
 longer triggers the greeting. A trailing "s" is ignored ("parents" matches
-"parent"), but there is no real stemming or search by meaning: "patient" does
-not match "patience", and a question whose words appear in no text gets the
-no-match message.
+"parent"), but word matching has no real stemming: "patient" does not match
+"patience". Search by meaning covers those cases when it is reachable.
+
+`api/knowledge.json` is the copy of the dataset the search function reads.
+`test/knowledge_export_test.dart` fails when it drifts from the Dart dataset;
+regenerate it with `UPDATE_KNOWLEDGE=1 flutter test test/knowledge_export_test.dart`.
+The function allows 20 searches a minute per address on each instance and
+costs a fraction of a cent per thousand searches.
 
 The first message in the chat and the About dialog both say this plainly:
-answers come from a small built-in set of texts with references, picked by
-keyword rules, the texts have not been reviewed by a scholar, and for a
+answers come from a small built-in set of texts with references, picked by a
+search model that writes nothing, the texts have not been reviewed by a scholar, and for a
 ruling you should ask a scholar.
 
 The dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
@@ -83,8 +94,9 @@ against a trusted source before relying on them.
 
 Peace AI is becoming an open-source search tool for the Quran and hadith in
 Bangla and English: you ask in your own words and get the actual verses and
-hadith, each with its reference and, for hadith, its grading. None of this is
-built yet. The app today is the keyword prototype described above.
+hadith, each with its reference and, for hadith, its grading. Search by meaning
+works over the 66 built-in texts; the complete corpus, gradings and Bangla
+translations are not built yet.
 
 Rules the project keeps:
 
@@ -101,9 +113,8 @@ Planned work, in order:
    it. The Tanzil Arabic Quran text is CC BY 3.0 for verbatim copies with
    credit. Translations are copyrighted, so each one needs written permission
    from its publisher before it ships.
-2. Search by meaning over that corpus, so a question such as "how to be
-   patient when sick" finds the right texts. Results are retrieved, never
-   generated.
+2. Point search by meaning (already working on the built-in texts) at that
+   corpus. Results are retrieved, never generated.
 3. A Bangla translation beside the English one.
 4. Review of the dataset by a scholar, and a "report an error" button on
    every answer.
@@ -138,7 +149,8 @@ lib/
   models/                    Message, QuranVerse and Hadith models
   screens/                   Splash, tab shell, chat, bookmarks and settings
   services/
-    ai_response_service.dart        Keyword rules that build each reply
+    ai_response_service.dart        Builds each reply (topics, meaning, words)
+    meaning_search.dart             Client for api/search.mjs
     islamic_knowledge_service.dart  Built-in verses and hadiths, search
     bookmark_service.dart           Bookmarks in shared_preferences
     share_service.dart              Copy a reply to the clipboard
@@ -148,6 +160,8 @@ assets/fonts/                Amiri Regular 1.000 (Arabic) and the Anek Bangla
                              variable font (interface), each with its
                              licence (SIL OFL 1.1)
 site/                        Static landing page (HTML, CSS, a little JS)
+api/search.mjs               Search by meaning (Vercel function)
+api/knowledge.json           The dataset copy that function searches
 vercel.json                  Builds the landing page and the web app together
 test/widget_test.dart        Unit and widget tests
 ```
@@ -217,9 +231,8 @@ Ubuntu, plus an unsigned iOS release build on macOS.
 
 Known limitations, all visible in the code today:
 
-- No AI model and no network call: replies come from keyword rules.
-- Free text is matched word by word, with no stemming and no search by
-  meaning, so a question only finds a text that shares its words.
+- Search by meaning needs the network; offline, free text is matched word
+  by word with no stemming.
 - Bookmarks saved by earlier versions show their verse twice, once in the
   old reply text and once as a quoted block.
 - The dataset is small (46 verses, 20 hadiths) and has not been reviewed by
