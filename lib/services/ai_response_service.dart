@@ -160,29 +160,24 @@ class AIResponseService {
 
     if (_hasAny(words, _helpWords)) {
       return _reply(
-        'Ask in your own words or name a topic. Each answer is a Quran '
-        'verse or a hadith from the built-in texts, shown with its '
-        'reference. Topics with a fixed answer:\n\n$_topicList',
+        'Ask in your own words, in Bangla or English, or name a topic. Each '
+        'answer is stored Quran or hadith text, shown with its reference. '
+        'Topics with a fixed answer:\n\n$_topicList',
       );
     }
 
-    // Free text: first the closest texts by meaning (this also reads Bangla
-    // questions), at most one verse and one hadith, word for word as stored.
+    // Free text: first the closest stored texts by meaning across the whole
+    // Quran and the hadith collections (this also reads Bangla questions),
+    // shown word for word as the search API returns them.
     if (meaningSearch != null) {
-      final found = (await meaningSearch!(userQuery))
-          .map(_knowledgeService.findByReference)
-          .whereType<Object>()
-          .toList();
-      final verse = found.whereType<QuranVerse>().firstOrNull;
-      final hadith = found.whereType<Hadith>().firstOrNull;
-      if (verse != null || hadith != null) {
+      final matches = await meaningSearch!(userQuery);
+      if (matches.isNotEmpty) {
         return _reply(
-          'Closest in meaning among the built-in texts. This is a search '
-          'result, not a ruling; ask a scholar about your situation.',
-          [
-            if (verse != null) verse.reference,
-            if (hadith != null) hadith.reference,
-          ],
+          'Closest in meaning among the stored Quran and hadith texts. This '
+          'is a search result, not a ruling; ask a scholar about your '
+          'situation.',
+          const [],
+          matches,
         );
       }
     }
@@ -224,7 +219,11 @@ class AIResponseService {
     );
   }
 
-  Message _reply(String text, [List<String> references = const []]) {
+  Message _reply(
+    String text, [
+    List<String> references = const [],
+    List<SearchMatch>? matches,
+  ]) {
     final now = DateTime.now();
     return Message(
       // The counter keeps ids unique when two replies share a timestamp.
@@ -233,6 +232,7 @@ class AIResponseService {
       isUser: false,
       timestamp: now,
       references: references.isNotEmpty ? references : null,
+      matches: matches,
     );
   }
 

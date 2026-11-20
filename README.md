@@ -2,7 +2,7 @@
 
 # Peace AI
 
-A Flutter chat app that answers questions about Islam with Quran verses and hadiths from a small built-in dataset.
+A Flutter chat app, website widget and MCP server that answer questions about Islam with stored Quran verses and hadiths, each with its reference: the whole Quran and about 3,700 hadiths, searched by meaning in Bangla or English.
 
 [![Flutter CI](https://github.com/tahmidbintaslim/Peace-AI/actions/workflows/flutter-ci.yml/badge.svg?branch=main)](https://github.com/tahmidbintaslim/Peace-AI/actions/workflows/flutter-ci.yml)
 [![License: MIT](https://img.shields.io/github/license/tahmidbintaslim/Peace-AI)](LICENSE)
@@ -16,6 +16,7 @@ A Flutter chat app that answers questions about Islam with Quran verses and hadi
 - [Quick start](#quick-start)
 - [What it is](#what-it-is)
 - [Direction](#direction)
+- [API, MCP and widget](#api-mcp-and-widget)
 - [Features](#features)
 - [Project structure](#project-structure)
 - [Running it](#running-it)
@@ -41,9 +42,10 @@ See [Running it](#running-it) for Android, iOS and release builds.
 ## What it is
 
 You type a question (or tap a topic chip), and the app replies with a short
-line of explanation plus at most one Quran verse (Arabic text and English
-translation) and at most one hadith (English translation and narrator), each
-set as a quoted block under its reference. Some replies, such as the greeting,
+line of explanation plus the closest stored texts, each set as a quoted block
+under its reference: from the search, up to three verses or hadiths in Arabic
+with Bangla and English translations; from the built-in topics and offline
+fallback, at most one verse and one hadith. Some replies, such as the greeting,
 the help message or the no-match message, have no verse or hadith.
 
 Replies are built in `lib/services/ai_response_service.dart`, checked in
@@ -53,36 +55,45 @@ this order:
 2. A word tied to a topic such as prayer, mercy, patience or charity gets
    that topic's fixed line and its verse or hadith.
 3. "help", "guidance" or "advice" gets a help message listing the topics.
-4. Anything else is searched by meaning: `api/search.mjs` (a Vercel function)
-   ranks the built-in texts with an embedding model (Gemini, else Qwen, else OpenAI) through Vercel AI
-   Gateway, which also understands Bangla questions. It returns references
-   only; the app shows the closest verse and hadith from its own dataset,
-   word for word, labelled as a search result and not a ruling. The model
-   writes nothing.
-5. If that search is unreachable or finds nothing close (cosine score below
-   0.55), the question is searched by its significant words (common words such as
-   "what", "the" or "about" are ignored) in the verse translations and surah
-   names and in the hadith translations and narrator names. The texts are
-   ranked by how many of those words they contain, and the best verse and
-   the best hadith are shown if they tie; otherwise only the better one.
+4. Anything else is searched by meaning: `api/search.mjs` (a Vercel
+   function) forwards the question to peace-api, which searches all 6,236
+   ayat and about 3,700 hadith from ten collections with the bge-m3
+   embedding model, so Bangla questions work too. The app shows up to three
+   returned texts word for word: Arabic, Bangla and English, the reference,
+   and for a hadith its grade, or "Grade: not stated in the source" when the
+   source gives none. The reply is labelled as a search result, not a
+   ruling. The model writes nothing.
+5. If that search is unreachable, rate limited or finds nothing, the
+   question is searched by its significant words (common words such as
+   "what", "the" or "about" are ignored) in the small built-in dataset: the
+   verse translations and surah names and the hadith translations and
+   narrator names. The texts are ranked by how many of those words they
+   contain, and the best verse and the best hadith are shown if they tie;
+   otherwise only the better one.
 
 Keywords and search words match whole words only, so "hi" inside "this" no
 longer triggers the greeting. A trailing "s" is ignored ("parents" matches
 "parent"), but word matching has no real stemming: "patient" does not match
 "patience". Search by meaning covers those cases when it is reachable.
 
-`api/knowledge.json` is the copy of the dataset the search function reads.
-`test/knowledge_export_test.dart` fails when it drifts from the Dart dataset;
-regenerate it with `UPDATE_KNOWLEDGE=1 flutter test test/knowledge_export_test.dart`.
-The function allows 20 searches a minute per address on each instance and
-costs a fraction of a cent per thousand searches.
+peace-api limits how often each address may search (`429` with
+`rate_limited` or `daily_limit`); the app then falls back to word matching.
 
 The first message in the chat and the About dialog both say this plainly:
-answers come from a small built-in set of texts with references, picked by a
-search model that writes nothing, the texts have not been reviewed by a scholar, and for a
+answers are stored texts with references, picked by a search model that
+writes nothing, hadith grades are shown only when the source gives one, the texts have not been reviewed by a scholar, and for a
 ruling you should ask a scholar.
 
-The dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
+Caveats about the searched corpus:
+
+- Hadith numbering is per book as stored ("Sahih al-Bukhari, book 65,
+  hadith 315"), which may not match the numbering on sunnah.com or in print.
+- Most hadith have no grade in the source, so most show "Grade: not stated
+  in the source". The app never adds a grade of its own.
+- Some texts lack one translation; the missing language is simply not shown.
+- The corpus has not been reviewed by a scholar.
+
+The offline dataset is hard-coded in `lib/services/islamic_knowledge_service.dart`:
 
 - 46 Quran verses from 29 surahs
 - 19 hadiths (Sahih Bukhari, Sahih Muslim, Sunan At-Tirmidhi, Al-Adab Al-Mufrad),
@@ -96,8 +107,9 @@ against a trusted source before relying on them.
 Peace AI is becoming an open-source search tool for the Quran and hadith in
 Bangla and English: you ask in your own words and get the actual verses and
 hadith, each with its reference and, for hadith, its grading. Search by meaning
-works over the 65 built-in texts; the complete corpus, gradings and Bangla
-translations are not built yet.
+now covers the whole Quran and about 3,700 hadith with Bangla and English
+translations; gradings are shown where the source gives them, and most hadith
+have none yet.
 
 Rules the project keeps:
 
@@ -105,27 +117,73 @@ Rules the project keeps:
   a ruling it tells you to ask a scholar.
 - **No answer without a source.** A model may find and rank texts, but every
   text shown is the stored original, word for word, with its reference.
-- **Hadith show their grading.**
+- **Hadith show their grading only when the source gives one.** Otherwise
+  the app says the grade is not stated.
 - **Free, no ads, no tracking.** Costs are to be met by donations.
 
 Planned work, in order:
 
-1. Replace the hand-typed dataset with complete sources whose licences allow
-   it. The Tanzil Arabic Quran text is CC BY 3.0 for verbatim copies with
-   credit. Translations are copyrighted, so each one needs written permission
-   from its publisher before it ships.
-2. Point search by meaning (already working on the built-in texts) at that
-   corpus. Results are retrieved, never generated.
-3. A Bangla translation beside the English one.
-4. Review of the dataset by a scholar, and a "report an error" button on
+1. Hadith grades from sources that state them, and numbering cross-checked
+   against sunnah.com.
+2. Review of the corpus by a scholar, and a "report an error" button on
    every answer.
+
+## API, MCP and widget
+
+All three return stored texts with their references and never a ruling.
+
+### Search API
+
+```
+POST https://peace-ai-omega.vercel.app/api/search
+{ "query": "ধৈর্য", "kinds": ["quran", "hadith"], "limit": 5 }
+```
+
+`query` is 1-500 characters; `kinds` and `limit` (1-10) are optional. The
+reply is `{ "matches": [...], "notice": "..." }`; each match has `id`,
+`kind`, `score`, `reference`, `referenceBengali` (sometimes), `url` (or
+null), `arabic`, `english`, `bengali` (any may be null), `grade` (null when
+the source gives none) and, for hadith, `collection`. Errors: `400` for a
+bad request, `429` (`rate_limited` or `daily_limit`), `503`. CORS is open.
+`api/search.mjs` validates the request and forwards it to peace-api
+(`https://nbsbfhtsnitkchclxlwx.supabase.co/functions/v1/peace-api`, same
+contract), which does the search and the rate limiting.
+
+### MCP server
+
+`https://peace-ai-omega.vercel.app/api/mcp` is a stateless MCP server over
+Streamable HTTP (`api/mcp.mjs`, no dependencies). It has two tools,
+`search_quran` and `search_hadith`, each taking `query` and an optional
+`limit` (1-10, default 5) and returning each text's reference, Arabic,
+Bangla, English and grade line, plus the notice.
+
+- **Claude** (claude.ai or Claude Desktop): Settings, Connectors, Add custom
+  connector, and paste the URL. Claude Code:
+  `claude mcp add --transport http peace-ai https://peace-ai-omega.vercel.app/api/mcp`.
+- **ChatGPT**: with developer mode on, Settings, Connectors, Create, and
+  paste the URL (no authentication).
+- **Other clients** (Cursor, VS Code and others): add a remote server of type
+  `http` (Streamable HTTP) with the URL, for example
+  `{ "mcpServers": { "peace-ai": { "url": "https://peace-ai-omega.vercel.app/api/mcp" } } }`.
+
+### Website widget
+
+```html
+<script src="https://peace-ai-omega.vercel.app/widget.js" data-lang="bn"></script>
+```
+
+`site/widget.js` draws a search box where the tag is, inside a shadow root so
+the host page's styles do not leak in, calls peace-api directly and lists
+the texts with their references, grades and the notice. `data-lang="en"`
+switches the labels and puts English before Bangla.
 
 ## Features
 
 - Three tabs at the bottom: Ask (the chat), Saved (bookmarks) and Settings
 - Chat screen with topic chips (Prayer, Mercy, Knowledge, Patience, Charity,
   Family), shown until the first question is sent
-- Each reply lists its Quran or hadith references
+- Each reply quotes its texts under their references; hadith show their
+  grade or say it is not stated
 - Bookmarks, saved on the device with `shared_preferences`
 - Share button that opens a dialog to copy a reply and its references to the
   clipboard or view the formatted text (there is no system share sheet)
@@ -161,8 +219,10 @@ assets/fonts/                Amiri Regular 1.000 (Arabic) and the Anek Bangla
                              variable font (interface), each with its
                              licence (SIL OFL 1.1)
 site/                        Static landing page (HTML, CSS, a little JS)
-api/search.mjs               Search by meaning (Vercel function)
-api/knowledge.json           The dataset copy that function searches
+api/search.mjs               Search API: validates and forwards to peace-api
+api/mcp.mjs                  MCP server (search_quran, search_hadith)
+site/widget.js               Embeddable search widget
+test/api_check.mjs           Self-check for both functions (node, mocked fetch)
 vercel.json                  Builds the landing page and the web app together
 test/widget_test.dart        Unit and widget tests
 ```
@@ -192,6 +252,7 @@ cd Peace-AI
 flutter pub get
 flutter run -d chrome   # or an Android/iOS device
 flutter test
+node test/api_check.mjs   # API and MCP self-check
 flutter build apk --release
 flutter build ios --release --no-codesign   # macOS only
 ```
@@ -236,8 +297,10 @@ Known limitations, all visible in the code today:
   by word with no stemming.
 - Bookmarks saved by earlier versions show their verse twice, once in the
   old reply text and once as a quoted block.
-- The dataset is small (46 verses, 19 hadiths) and has not been reviewed by
-  a scholar.
+- Most hadith have no grade in the source, hadith numbering is per book as
+  stored, and the corpus has not been reviewed by a scholar.
+- Search results have no score cut-off, so a question with no related text
+  still gets the closest ones.
 - Sharing copies text to the clipboard; there is no system share sheet.
 - Release APKs are signed with the debug key.
 - The `web/` folder has no icons, and there are no desktop builds.

@@ -99,8 +99,11 @@ class _MessageBubbleState extends State<MessageBubble> {
               reference: reference,
               source: _knowledge.findByReference(reference),
             ),
+          for (final match in message.matches ?? const <SearchMatch>[])
+            _MatchBlock(match: match),
           // Only replies that quote a source are worth saving or sharing.
-          if (message.references?.isNotEmpty ?? false)
+          if ((message.references?.isNotEmpty ?? false) ||
+              (message.matches?.isNotEmpty ?? false))
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Row(
@@ -219,6 +222,75 @@ class _SourceBlock extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Narrated by ${source.narrator}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A text from the search API, set like [_SourceBlock]: reference, Arabic,
+/// then the Bangla and English translations, and for a hadith its grade as
+/// the source gives it.
+class _MatchBlock extends StatelessWidget {
+  final SearchMatch match;
+
+  const _MatchBlock({required this.match});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final translation = theme.textTheme.bodyLarge?.copyWith(height: 28 / 17);
+    final arabic = match.arabic;
+    final bengali = match.bengali;
+    final english = match.english;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      decoration: BoxDecoration(
+        color: colors.secondaryContainer,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            '${match.isHadith ? 'Hadith' : 'Quran'}  ·  ${match.reference}',
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: colors.secondary,
+            ),
+          ),
+          if (arabic != null && arabic.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              arabic,
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                fontFamily: arabicFont,
+                fontSize: 26,
+                height: 2,
+                color: colors.onSurface,
+              ),
+            ),
+          ],
+          if (bengali != null && bengali.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(bengali, style: translation),
+          ],
+          if (english != null && english.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(english, style: translation),
+          ],
+          if (match.isHadith) ...[
+            const SizedBox(height: 6),
+            Text(
+              'Grade: ${match.grade ?? 'not stated in the source'}',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colors.onSurfaceVariant,
               ),
