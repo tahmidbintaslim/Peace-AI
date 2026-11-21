@@ -6,13 +6,16 @@ import '../widgets/common.dart';
 /// What the answers are, in plain words. Shown in the first chat message
 /// and in the About dialog.
 String sourceNotice(IslamicKnowledgeService knowledge) {
-  return 'Answers come from a small built-in set of '
-      '${knowledge.totalVerses} Quran verses and ${knowledge.totalHadiths} '
-      'hadiths, each shown with its reference. An AI search model '
-      'picks the closest texts but writes nothing; each text is shown '
-      'exactly as stored. The texts have not been reviewed by a '
-      'scholar, so check them against a trusted source. For a ruling, ask '
-      'a scholar.';
+  return 'Questions are searched by meaning across the whole Quran and '
+      'about 3,700 hadiths from ten collections, online. Offline, or when '
+      'the search is unavailable, answers come from a small built-in set '
+      'of ${knowledge.totalVerses} Quran verses and '
+      '${knowledge.totalHadiths} hadiths. An AI search model picks the '
+      'closest texts but writes nothing; each text is shown exactly as '
+      'stored, with its reference. Hadith grades are shown only when the '
+      'source gives one. The texts have not been reviewed by a scholar, '
+      'so check them against a trusted source. For a ruling, ask a '
+      'scholar.';
 }
 
 void showAboutPeaceAI(BuildContext context) {
@@ -23,8 +26,9 @@ void showAboutPeaceAI(BuildContext context) {
       content: SingleChildScrollView(
         child: Text(
           '${sourceNotice(IslamicKnowledgeService())}\n\n'
-          'Free and open source (MIT licence). No ads, no tracking, and '
-          'nothing you type leaves this device.',
+          'Free and open source (MIT licence). No ads and no tracking. A '
+          'question you type is sent to the search, and not stored by the '
+          'app.',
         ),
       ),
       actions: [

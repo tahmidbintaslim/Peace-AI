@@ -1,3 +1,5 @@
+import 'islamic_content.dart';
+
 class Message {
   final String id;
   final String text;
@@ -5,12 +7,17 @@ class Message {
   final DateTime timestamp;
   final List<String>? references;
 
+  /// Texts from the search API, carried whole because they are not in the
+  /// built-in dataset that [references] point into.
+  final List<SearchMatch>? matches;
+
   Message({
     required this.id,
     required this.text,
     required this.isUser,
     required this.timestamp,
     this.references,
+    this.matches,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +27,7 @@ class Message {
       'isUser': isUser,
       'timestamp': timestamp.toIso8601String(),
       'references': references,
+      'matches': matches?.map((m) => m.toJson()).toList(),
     };
   }
 
@@ -32,6 +40,9 @@ class Message {
       references: json['references'] != null
           ? List<String>.from(json['references'] as List)
           : null,
+      matches: (json['matches'] as List?)
+          ?.map((m) => SearchMatch.fromJson(m as Map<String, dynamic>))
+          .toList(),
     );
   }
 }

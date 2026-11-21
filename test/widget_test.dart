@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +43,28 @@ void main() {
       expect(message.id, '1');
       expect(message.text, 'Test message');
       expect(message.isUser, true);
+    });
+
+    test('Message with search matches survives a JSON round trip', () {
+      final message = Message(
+        id: '1',
+        text: 'Reply',
+        isUser: false,
+        timestamp: DateTime(2025),
+        matches: const [
+          SearchMatch(
+            kind: 'hadith',
+            reference: 'Sahih al-Bukhari, book 1, hadith 1',
+            english: 'Actions are by intentions.',
+          ),
+        ],
+      );
+      final back = Message.fromJson(
+        jsonDecode(jsonEncode(message.toJson())) as Map<String, dynamic>,
+      );
+      expect(back.matches!.single.reference, message.matches!.single.reference);
+      expect(back.matches!.single.grade, isNull);
+      expect(back.matches!.single.bengali, isNull);
     });
 
     test('Message with references can be serialized', () {
@@ -233,15 +257,30 @@ void main() {
       service = AIResponseService();
     });
 
-    test('Free text uses search by meaning, keeping only known references',
-        () async {
-      final meaning = AIResponseService(
-        meaningSearch: (_) async =>
-            ['Made Up 9:9', 'Al-Fatihah 1:1', 'Sahih Bukhari 6485'],
+    test('Free text shows the texts the search by meaning returns', () async {
+      const verse = SearchMatch(
+        kind: 'quran',
+        reference: 'Al-Baqarah 2:286',
+        arabic: 'لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا',
+        english: 'Allah does not burden a soul beyond that it can bear.',
+        bengali: 'আল্লাহ কাউকে তার সাধ্যের বাইরে দায়িত্ব দেন না।',
       );
+      final meaning = AIResponseService(meaningSearch: (_) async => [verse]);
       final response = await meaning.generateResponse('আমি খুব দুঃখে আছি');
-      expect(response.references, ['Al-Fatihah 1:1', 'Sahih Bukhari 6485']);
+      expect(response.matches, [verse]);
+      expect(response.references, isNull);
       expect(response.text, contains('not a ruling'));
+    });
+
+    test('Topics keep their fixed answer without calling the search', () async {
+      var called = false;
+      final meaning = AIResponseService(meaningSearch: (_) async {
+        called = true;
+        return const [];
+      });
+      final response = await meaning.generateResponse('tell me about mercy');
+      expect(called, isFalse);
+      expect(response.references, isNotNull);
     });
 
     test('Falls back to word matching when search by meaning finds nothing',
@@ -388,6 +427,49 @@ void main() {
       expect(find.text(verse.translation), findsOneWidget);
       // A reference missing from the dataset is still shown.
       expect(find.textContaining('Unknown Book 9:9'), findsOneWidget);
+    });
+
+    const hadith = SearchMatch(
+      kind: 'hadith',
+      reference: 'Sahih al-Bukhari, book 1, hadith 1',
+      arabic: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ',
+      english: 'Actions are by intentions.',
+      bengali: 'কাজ নিয়ত অনুযায়ী।',
+    );
+    final searched = Message(
+      id: 'm2',
+      text: 'Closest in meaning. This is a search result, not a ruling.',
+      isUser: false,
+      timestamp: DateTime(2025),
+      matches: const [hadith],
+    );
+
+    testWidgets('Reply shows search texts with reference and missing grade',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: MessageBubble(message: searched),
+            ),
+          ),
+        ),
+      );
+      expect(find.textContaining(hadith.reference), findsOneWidget);
+      expect(find.text(hadith.arabic!), findsOneWidget);
+      expect(find.text(hadith.bengali!), findsOneWidget);
+      expect(find.text(hadith.english!), findsOneWidget);
+      expect(find.text('Grade: not stated in the source'), findsOneWidget);
+      expect(find.textContaining('not a ruling'), findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+    });
+
+    test('Shared text carries the search texts and reference', () {
+      final text = ShareService.formatMessage(searched);
+      expect(text, contains(hadith.bengali));
+      expect(text, contains('(${hadith.reference})'));
+      expect(text, contains('Grade: not stated in the source'));
     });
 
     testWidgets('Statistics are counted from the dataset', (tester) async {

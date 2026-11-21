@@ -32,6 +32,18 @@ class ShareService {
       buffer.writeln('($reference)');
     }
 
+    for (final match in message.matches ?? const <SearchMatch>[]) {
+      buffer.writeln();
+      for (final text in [match.arabic, match.bengali, match.english]) {
+        if (text != null && text.isNotEmpty) buffer.writeln(text);
+      }
+      if (match.isHadith) {
+        buffer.writeln('Grade: ${match.grade ?? 'not stated in the source'}');
+      }
+      buffer.writeln('(${match.reference})');
+      if (match.url != null) buffer.writeln(match.url);
+    }
+
     buffer.writeln();
     buffer.writeln('---');
     buffer.writeln('Shared from Peace AI');
